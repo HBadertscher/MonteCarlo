@@ -38,9 +38,9 @@ int main(int argc, const char * argv[]) {
     }
   }
   
-  printf("Sum: %d \n", sum);
+  //printf("Sum: %d \n", sum);
   
-  printf("PI is exactly %f\n", 4*((double)sum)/((double)numOfIterations));
+  printf("%f\n", 4*((double)sum)/((double)numOfIterations));
   
   return 0;
  }
