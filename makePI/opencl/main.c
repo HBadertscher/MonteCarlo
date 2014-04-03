@@ -66,8 +66,8 @@ cl_program	cluCreateProgramWithFile(cl_context context,
 // main
 int main(int argc, const char * argv[])
 {
-    uint numOfCalc = 1000;
-    uint count = 1024*NUM_OF_IT / numOfCalc;
+    unsigned int numOfCalc = 1000;
+    unsigned int count = 1024*NUM_OF_IT / numOfCalc;
     
     float result[count];                   // results returned from device
     float pi;
