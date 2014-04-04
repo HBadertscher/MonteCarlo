@@ -11,13 +11,18 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sys/stat.h>
-#include <CL/opencl.h>
 #include <errno.h>
 #include <unistd.h>
 #include <getopt.h>
 #include <limits.h>
 #include <fcntl.h>
 #include <alloca.h>
+
+//#ifdef __APPLE__
+#include <OpenCL/opencl.h>
+//#else
+//#include <CL/cl.h>
+//#endif
 
 // Number of Iterations
 #define NUM_OF_IT 1000000
