@@ -17,9 +17,10 @@
 #include <getopt.h>
 #include <limits.h>
 #include <fcntl.h>
+#include <alloca.h>
 
 // Number of Iterations
-#define NUM_OF_IT 10000
+#define NUM_OF_IT 1000000
 
 
 /*
@@ -69,7 +70,7 @@ cl_program	cluCreateProgramWithFile(cl_context context,
 // main
 int main(int argc, const char * argv[])
 {
-    unsigned int numOfCalc = 1000;
+    unsigned int numOfCalc = 10000;
     unsigned int count = 1024*NUM_OF_IT / numOfCalc;
     
     float result[count];                   // results returned from device
@@ -93,6 +94,7 @@ int main(int argc, const char * argv[])
     //
     cl_uint num_platforms;
     int gpu=1;
+    int platform = 0;
 
     err = clGetPlatformIDs(0, NULL, &num_platforms);
     if( err != CL_SUCCESS)
@@ -108,10 +110,26 @@ int main(int argc, const char * argv[])
         printf("Strange Error: Got number of Platforms but no ID\n");
         return EXIT_FAILURE;
     }
+    
+    //typedef enum {
+    //    PLATFORM_AMD, PLATFORM_NVIDIA, PLATFORM_INTEL
+    //} platformcode;
+    //platformcode *codes = (platformcode *)malloc(sizeof(platformcode)*num_platforms);
+
+    for(i=0;i<num_platforms;i++)
+    {
+       size_t size;
+
+        cl_platform_id id = platformIds[i];
+        err = clGetPlatformInfo(id,CL_PLATFORM_NAME,0,NULL,&size);
+        char* name = (char*)alloca(sizeof(char)*size);
+        err = clGetPlatformInfo(id,CL_PLATFORM_NAME,size,name,NULL);
+        //printf("Platform %d: %s\n",i,name);
+    }
 
     // Connect to compute device
     //
-    err = clGetDeviceIDs(NULL, gpu ? CL_DEVICE_TYPE_GPU : CL_DEVICE_TYPE_CPU, 1, &device_id, NULL);
+    err = clGetDeviceIDs(platformIds[platform], gpu ? CL_DEVICE_TYPE_GPU : CL_DEVICE_TYPE_CPU, 1, &device_id, NULL);
     if (err != CL_SUCCESS)
     {
         printf("Error: Failed to create a device group!\n");
@@ -137,7 +155,7 @@ int main(int argc, const char * argv[])
     }
     
     //program = clCreateProgramWithSource(context, 1, (const char **) & KernelSource, NULL, &err);
-    program = cluCreateProgramWithFile(context,"/Users/boss/Documents/Studium/HBadertscher/MonteCarlo/makePI/opencl_xcode/makePI/makePI/makePI.cl", &err);
+    program = cluCreateProgramWithFile(context,"makePI.cl", &err);
     if (!program) {
         printf("Error: Failed to create compute program!\n");
 		return EXIT_FAILURE;

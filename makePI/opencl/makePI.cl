@@ -43,7 +43,7 @@ __kernel void getPoint( __global float* output )
     mySeed = k;
 
     sum = 0;
-    for(i=0; i<1000; i++)
+    for(i=0; i<10000; i++)
     {
         mySeed = random(mySeed);
         x = (float)mySeed;
@@ -59,5 +59,5 @@ __kernel void getPoint( __global float* output )
         }
     }
     
-    output[k] = ((float)sum) / 1000;
+    output[k] = ((float)sum) / 10000;
 }
