@@ -4,7 +4,7 @@
 # Licensed under CC-BY-NC-SA
 
 CC = gcc
-CFLAGS = -std=c99 -g -O2 -Wall -I/opt/AMDAPP/include
+CFLAGS = -std=c99 -g -O2 -Wall -I/opt/AMDAPP/include -I/opt/AMDAPP/include
 RM = rm -f
 
 SRCS=makePI.c

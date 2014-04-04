@@ -11,9 +11,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sys/stat.h>
-#include <OpenCL/opencl.h>
+#include <CL/opencl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <getopt.h>
 #include <limits.h>
-
+#include <fcntl.h>
 
 // Number of Iterations
 #define NUM_OF_IT 10000
@@ -86,9 +89,28 @@ int main(int argc, const char * argv[])
     cl_mem output;                      // device memory used for the output array
     
     
-    // Connect to a compute device
+    // Get Platforms
     //
-    int gpu = 1;
+    cl_uint num_platforms;
+    int gpu=1;
+
+    err = clGetPlatformIDs(0, NULL, &num_platforms);
+    if( err != CL_SUCCESS)
+    {
+        printf("Error: Didn't get number of platforms\n");
+        return EXIT_FAILURE;
+    }
+    cl_platform_id *platformIds = (cl_platform_id *)malloc(
+        num_platforms * sizeof(cl_platform_id));
+    err = clGetPlatformIDs(num_platforms, platformIds, 0);
+    if (err != CL_SUCCESS)
+    {
+        printf("Strange Error: Got number of Platforms but no ID\n");
+        return EXIT_FAILURE;
+    }
+
+    // Connect to compute device
+    //
     err = clGetDeviceIDs(NULL, gpu ? CL_DEVICE_TYPE_GPU : CL_DEVICE_TYPE_CPU, 1, &device_id, NULL);
     if (err != CL_SUCCESS)
     {
