@@ -18,14 +18,11 @@
 #include <fcntl.h>
 #include <alloca.h>
 
-//#ifdef __APPLE__
+#ifdef __APPLE__
 #include <OpenCL/opencl.h>
-//#else
-//#include <CL/cl.h>
-//#endif
-
-// Number of Iterations
-#define NUM_OF_IT 1000000
+#else
+#include <CL/cl.h>
+#endif
 
 
 /*
@@ -75,10 +72,14 @@ cl_program	cluCreateProgramWithFile(cl_context context,
 // main
 int main(int argc, const char * argv[])
 {
-    unsigned int numOfCalc = 10000;
-    unsigned int count = 1024*NUM_OF_IT / numOfCalc;
+    unsigned int numOfCalc = 1000;
+    unsigned int count = 1024*10000;
+    int seed;
+    time_t startTime;
+    time_t elTime;
     
-    float result[count];                   // results returned from device
+//    float result[count];                   // results returned from device
+    float* result;
     float pi;
     int err;                            // error code returned from api calls
     int i;
@@ -94,9 +95,16 @@ int main(int argc, const char * argv[])
     
     cl_mem output;                      // device memory used for the output array
     
-    
     // Get Platforms
     //
+    
+    seed = (int)time(NULL);
+    result = calloc(count,sizeof(float));
+    if(result==0) {
+      printf("Couldn't allocate enough memory for result :( \n");
+      return EXIT_FAILURE;
+    }
+    
     cl_uint num_platforms;
     int gpu=1;
     int platform = 0;
@@ -116,11 +124,6 @@ int main(int argc, const char * argv[])
         return EXIT_FAILURE;
     }
     
-    //typedef enum {
-    //    PLATFORM_AMD, PLATFORM_NVIDIA, PLATFORM_INTEL
-    //} platformcode;
-    //platformcode *codes = (platformcode *)malloc(sizeof(platformcode)*num_platforms);
-
     for(i=0;i<num_platforms;i++)
     {
        size_t size;
@@ -129,7 +132,7 @@ int main(int argc, const char * argv[])
         err = clGetPlatformInfo(id,CL_PLATFORM_NAME,0,NULL,&size);
         char* name = (char*)alloca(sizeof(char)*size);
         err = clGetPlatformInfo(id,CL_PLATFORM_NAME,size,name,NULL);
-        //printf("Platform %d: %s\n",i,name);
+        printf("Platform %d: %s\n",i,name);
     }
 
     // Connect to compute device
@@ -202,6 +205,8 @@ int main(int argc, const char * argv[])
     //
     err = 0;
     err |= clSetKernelArg(kernel, 0, sizeof(cl_mem), &output);
+    err |= clSetKernelArg(kernel, 1, sizeof(unsigned int), &numOfCalc);
+    err |= clSetKernelArg(kernel, 2, sizeof(int), &seed);
     if (err != CL_SUCCESS)
     {
         printf("Error: Failed to set kernel arguments! %d\n", err);
@@ -219,13 +224,8 @@ int main(int argc, const char * argv[])
 
     // Execute the kernel using the maximum number of work group items for this device
     //
+    startTime = time(NULL);
     global = count;//local*((int)count/local);
-    if(result == 0)
-    {
-        printf("Error: Failed to allocate memory");
-        return EXIT_FAILURE;
-    }
-    
     err = clEnqueueNDRangeKernel(commands, kernel, 1, NULL, &global, &local, 0, NULL, NULL);
     if (err)
     {
@@ -236,10 +236,11 @@ int main(int argc, const char * argv[])
     // Wait for the command commands to get serviced before reading back results
     //
     clFinish(commands);
+    elTime = difftime(time(NULL),startTime);
 
     // Read back the results from the device to verify the output
     //
-    err = clEnqueueReadBuffer( commands, output, CL_TRUE, 0, sizeof(float)*count, &result, 0, NULL, NULL );
+    err = clEnqueueReadBuffer( commands, output, CL_TRUE, 0, sizeof(float)*count, result, 0, NULL, NULL );
     if (err != CL_SUCCESS)
     {
         printf("Error: Failed to read output array! %d\n", err);
@@ -256,7 +257,8 @@ int main(int argc, const char * argv[])
         pi += result[i];
     }
     pi = 4 * pi / count;
-    printf("%f\n", pi);
+    printf("Estimated value of PI: %f\n", pi);
+    printf("Elapsed time: %f sec\n", (float)elTime);
 
     
     // release all the objects

@@ -33,17 +33,17 @@ int	random(int seed) {
 
 
 
-__kernel void getPoint( __global float* output )
+__kernel void getPoint( __global float* output, unsigned int numOfIt, int seed )
 {
     __private float x,y;
-    __private int i, sum;
+    __private unsigned int i, sum;
     __private int k = get_global_id(0);
     __private int mySeed;
     
-    mySeed = k;
+    mySeed = k * seed;
 
     sum = 0;
-    for(i=0; i<10000; i++)
+    for(i=0; i<numOfIt; i++)
     {
         mySeed = random(mySeed);
         x = (float)mySeed;
@@ -59,5 +59,5 @@ __kernel void getPoint( __global float* output )
         }
     }
     
-    output[k] = ((float)sum) / 10000;
+    output[k] = ((float)sum) / numOfIt;
 }
