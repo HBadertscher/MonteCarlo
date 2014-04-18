@@ -1,0 +1,15 @@
+Random Device
+=============
+
+This program reads a specified number of integer values from the random device 
+/dev/urandom. The integers are converted to a double precision floating point number and
+written out to the standard output.
+
+Basic function call:
+$ ./dev_rand
+
+Specify number of random values (e.g. 10000)
+$ ./dev_rand 10000
+
+Redirect output to a file
+$ ./dev_rand 10000 >> file.txt
