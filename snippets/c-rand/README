@@ -1,0 +1,14 @@
+C Random Function
+=================
+
+This program calculates a specified number of integer values using the standard C rand() function. The integers are converted to a double precision floating point number and
+written out to the standard output.
+
+Basic function call:
+$ ./c_rand
+
+Specify number of random values (e.g. 10000)
+$ ./c_rand 10000
+
+Redirect output to a file
+$ ./c_rand 10000 >> file.txt
