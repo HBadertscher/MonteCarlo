@@ -1,0 +1,15 @@
+Mersenne-Twister RNG
+====================
+
+This program generates a specified number of integer values using a Mersenne-Twister 
+Pseudo Random Number Generator. The states are initialised using the random device.
+The generated numbers are written out to the standard output.
+
+Basic function call:
+$ ./mersenne-twister
+
+Specify number of random values (e.g. 10000)
+$ ./mersenne-twister 10000
+
+Redirect output to a file
+$ ./mersenne-twister 10000 >> file.txt

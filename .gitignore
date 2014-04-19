@@ -41,3 +41,4 @@ Info.plist
 c-rand
 dev_rand
 park-miller
+mersenne-twister
