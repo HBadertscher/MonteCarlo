@@ -31,3 +31,12 @@
 *.xdy
 *.tdo
 *.o
+MonteCarlo.pdf
+MonteCarlo.run.xml
+*eps-converted-to.pdf
+*-blx.bib
+makePI
+Info.plist
+c-rand
+dev_rand
+park-miller

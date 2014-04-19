@@ -1,0 +1,15 @@
+Park-Miller RNG
+===============
+
+This program generates a specified number of integer values using a Park-Miller 
+LCG Pseudo Random Number Generator. The integers are converted to a double 
+precision floating point number and written out to the standard output.
+
+Basic function call:
+$ ./park-miller
+
+Specify number of random values (e.g. 10000)
+$ ./park-miller 10000
+
+Redirect output to a file
+$ ./park-miller 10000 >> file.txt
