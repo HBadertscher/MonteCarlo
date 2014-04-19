@@ -1,0 +1,18 @@
+Boost-Library
+=============
+
+This program uses the Boost Library to generate random numbers. In the source
+code, one can specify if a Mersenne-Twister or a Park-Miller RNG should be used.
+The random numbers are written to stdout.
+
+Mersenne-Twister:	#define MT
+Park-Miller:		//#define MT
+
+Basic function call:
+$ ./boost
+
+Specify number of random values (e.g. 10000)
+$ ./boost 10000
+
+Redirect output to a file
+$ ./boost 10000 >> file.txt
