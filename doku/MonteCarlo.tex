@@ -302,4 +302,48 @@ Die Probleme beim Testen eines Zufallszahlengenerators können an folgendem Beis
 \printbibliography[heading=subbibliography]
 \end{refsection}
 
+\section{Integration}
+
+Die Monte-Carlo-Methode kann zur nummerischen Bestimmung von Integralen benutzt werden. Dazu werden in dem Definitionsbereich der Integrandenfunktion Zufallsereignisse generiert, deren Gesamtheit das Integral bestimmt. Im einzelnen können dazu die Methoden herangezogen werden, die im vorigen Abschnitt zu Erzeugung von Ereignissen benutzt wurden. Für die Bestimmung eines Integrals ist es wichtig, mit welcher Methode am effektivsten eine gewünschte Genauigkeit erreicht werden kann.
+% TODO HIT or Miss, etc...?
+
+\newpage
+
+\section{Beispiel $\pi$}
+
+Zur Illustration wird die Zahl $\pi$ mittels Monte Carlo Integration angenähert. Um die Komplexität möglichst gering zu halten, wird das Hit or Miss Verfahren angewendet.
+Ein Kreis mit Radius r hat eine Grundfläche von $\pi r^{2}$. Ein Einfaches Integrationsvolumen $\Omega^{2}$ für den Kreis ist ein Quadrat mit Seitenlänge $2 r$ und somit einer Grundfläche von $4 r^2$.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics{images/Kreis_ganz.jpg}
+	\caption{Kreis im Integrationsvolumen  $4 r^{2}$}
+	\label{fig:GanzerKreis}
+\end{figure}
+Wird der Nullpunkt des Koordinatensystemes im Ursprung des Kreises angenommen, kann das Problem offensichtlich auf den ersten Quadranten reduziert werden, ohne die Flächenverhältnisse zu verändern. Die neuen Flächen werden nun zu $\dfrac{1}{4}\pi r^{2}$ für den Kreis und $r^{2}$ für $\Omega^{2}$.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics{images/Kreis_viertel.jpg}
+	\caption{Ein viertel des Kreises im Integrationsvolumen $r^{2}$}
+	\label{fig:ViertelrKreis}
+\end{figure}
+Werden nun die Fläche des Integrationsraumes mit der des Viertelkreises verglichen, resultieren die Wahrscheinlichkeiten, ob ein HIT or Miss Ereignis im Kreis (grau) oder ausserhalb liegt. Wird der Radius $r = 1$ gesetzt, entsprechen die Flächen gerade der Wahrscheinlichkeit. Die Abfrage, ob ein Hit vorliegt, ist bei dem Viertelkreis einfach. Ist die Entfernung des Ereignis kleiner als $r$ zum Ursprung, handelt es sich um ein Hit. Die Entfernung kann mit dem Pythagoras ausgerechnet werden.
+
+\begin{equation}
+	P_{in} = \frac{\pi}{4}
+\end{equation}
+
+\begin{equation}
+	P_{out} = 1-\frac{\pi}{4}
+\end{equation}
+
+\begin{equation}
+	Hit, wenn x^{2} + y^{2} < 1
+\end{equation}
+Um als Ergebnis der Simulation die Zahl $\pi$ angenähert zu erhalten, müssen die Hits(k) mit der Anzahl generierter MC Ereignissen(N) dividiert werden und mit 4 Multipliziert werden.
+\begin{equation}
+	\pi \approx \dfrac{4 k}{N}
+\end{equation}
+
 \end{document}
