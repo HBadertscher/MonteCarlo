@@ -89,12 +89,39 @@ Monte Carlo Methoden kommen überall zum Einsatz, wenn deterministische Algorith
 	\item Statistische Untersuchung von Zufallsverteilungen
 \end{itemize}
 
-\subsection{Prinzip}
+\section{Funktionsprinzip}
+Die Monte Carlo Methode ist ein Überbegriff für verschiedene Möglichkeiten zur Algorithmen zur numerischen Berechnung / Simulation mittels Zufallsereignissen. Ein weit verbreiteter und sehr flexibler Ansatz ist das sogenannte Hit-or-Miss Verfahren. Dabei werden Zufallszahlen generiert und geprüft ob diese eine bestimmte Bedingung erfüllen oder nicht. Mit dem Verhältnis Hit / Miss wird das gewünschte Ergebnis approximiert. 
 
-\section{Anwendungen}
+\subsection{Abschätzung des Wertes von Pi}
+Als Einführungsbeispiel für die Monte Carlo Methode wird die Zahl $\pi$ mit einer Hit-or-Miss Methode abgeschätzt. Ein Kreis mit Radius $r$ hat eine Grundfläche von $A_{\text{Kreis}} = \pi r^{2}$.  Damit muss in einem Intervall von $[-r,+r]$ integriert werden, was eine Fläche von $A_{\text{Quadrat}} = 4r^2$ ergibt. Damit lässt sich $\pi$ approximieren als
+
+\begin{equation}
+	\hat{\pi} = \frac{A_{\text{Kreis}}}{r^2} = 4 \frac{A_{\text{Kreis}}}{A_{\text{Quadrat}}}
+\end{equation}
+
+Das Verhältnis der Fläche des Kreises zur Fläche des Quadrats entspricht der Wahrscheinlichkeit, dass ein Paar Zufallszahlen $(x_i,y_i)$ mit $x_i,y_i \leq r$ innerhalb des Kreises mit Radius $r$ liegen. Dies wird mit folgender Formel überprüft:
+
+\begin{equation}
+	x^2 + y^2 \leq r
+	\label{equ:innerhalbKreis}
+\end{equation}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=6cm]{images/kreis_hitmiss.eps}
+	\caption{Kreis}
+	\label{fig:KreisHitMiss}
+\end{figure}
+
+Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Quadranten reduziert werden. Für $N$ Iterationen, von welchen $k$ die Bedingung \ref{equ:innerhalbKreis} ergibt sich somit folgende Abschätzung für Pi:
+
+\begin{equation}
+	\hat{\pi} = 4 \cdot \frac{k}{N}
+\end{equation}
+
 
 \subsection{Numerische Integration}
-Die Monte-Carlo-Methode kann zur numerischen Bestimmung von Integralen benutzt werden. Dazu werden in dem Definitionsbereich der zu integrierenden Funktion Zufallsereignisse generiert. Generell kann ausgesagt werden, dass das Integral
+Einer der wichtigsten Anwendungsbereiche der Monte Carlo Methode ist die numerische Berechnung von Integralen. Dazu werden innerhalb des Definitionsbereich der zu integrierenden Funktion Zufallsereignisse generiert. Generell kann ausgesagt werden, dass das Integral
 
 \begin{equation}
 	I = \int_a^b f(x) dx
@@ -106,9 +133,10 @@ mit $N$ im Intervall $[a,b]$ gleichverteilten Zufallszahlen $x_i$ durch
 	\hat{I} = (b-a) \cdot \frac{1}{N} \sum_{i=1}^{N} f(x_i)
 \end{equation}
 
-approximiert werden kann. Der relative Fehler sinkt dabei mit $\frac{1}{N}$. Während für analytisch lösbare Integrale und solche mit kleinen Dimensionen ($\leq 4$) andere Möglichkeiten oft schneller sind, ist die Monte Carlo Methode besonders bei hohen Dimensionen oder sehr komplizierten Integrationsgrenzen verbreitet. \\
+approximiert werden kann. Der relative Fehler sinkt dabei mit $\frac{1}{\sqrt{N}}$. Während für analytisch lösbare Integrale und solche mit kleinen Dimensionen ($\leq 4$) andere Möglichkeiten oft schneller sind, ist die Monte Carlo Methode besonders bei hohen Dimensionen oder sehr komplizierten Integrationsgrenzen verbreitet. \\
 
 Der Algorithmus lässt sich sehr einfach beschreiben:
+
 \begin{enumerate}
 	\item Finde das Maximum $f_{max}$ der Funktion $f(x)$.
 	\item Erzeuge $N$ im Intervall $[a,b]$ gleichverteilte Zufallszahlen $x_i$.
@@ -121,15 +149,14 @@ Abbildung \ref{fig:integration_histogram} zeigt eine beliebige Funktion (rot), s
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=8cm]{images/integration_poisson.eps}
-	\caption{Histogramm durch Zufallsereignisse}
+	\includegraphics[width=7cm]{images/integration_poisson.eps}
+	\caption{Monte Carlo Integration einer Funktion}
 	\label{fig:integration_histogram}
 \end{figure}
 
 Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Meist ist man dabei nicht nur am numerischen Resultat interessiert, sondern auch an den einzelnen Ereignissen, welche zu diesem Resultat geführt haben. Dazu wird der Algorithmus leicht modifiziert. Die Zufallszahlen $x_i$ werden neu nicht gleichverteilt, sondern mit der Wahrscheinlichkeitsdichtefunktion $f(x)$ bzw. der Verteilungsfunktion $F(x)$ erzeugt. Das Histogramm dieser $x_i$ entspricht der mit $N/F$ normierten Funktion $f(x)$. Das Resultat $F$ kann also durch einen Vergleich des Histogramms mit der Funktion $f(x)$ bestimmt werden. Der Vorteil dieser Methode ist, dass so die Ereignisse $x_i$ mit der richtigen Verteilung bekannt sind und ausgewertet werden könne.
 
 
-\clearpage
 \section{Zufallszahlengeneratoren}
 
 \begin{quote}
@@ -397,44 +424,5 @@ Darauf kann die Funktion \texttt{dist()} verwendet werden um Zufallszahlen zu ge
 \printbibliography[heading=subbibliography]
 \end{refsection}
 
-
-\newpage
-
-\section{Beispiel $\pi$}
-
-Zur Illustration wird die Zahl $\pi$ mittels Monte Carlo Integration angenähert. Um die Komplexität möglichst gering zu halten, wird das Hit or Miss Verfahren angewendet.
-Ein Kreis mit Radius r hat eine Grundfläche von $\pi r^{2}$. Ein Einfaches Integrationsvolumen $\Omega^{2}$ für den Kreis ist ein Quadrat mit Seitenlänge $2 r$ und somit einer Grundfläche von $4 r^2$.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics{images/Kreis_ganz.jpg}
-	\caption{Kreis im Integrationsvolumen  $4 r^{2}$}
-	\label{fig:GanzerKreis}
-\end{figure}
-Wird der Nullpunkt des Koordinatensystemes im Ursprung des Kreises angenommen, kann das Problem offensichtlich auf den ersten Quadranten reduziert werden, ohne die Flächenverhältnisse zu verändern. Die neuen Flächen werden nun zu $\dfrac{1}{4}\pi r^{2}$ für den Kreis und $r^{2}$ für $\Omega^{2}$.
-
-\begin{figure}[h]
-	\centering
-	\includegraphics{images/Kreis_viertel.jpg}
-	\caption{Ein viertel des Kreises im Integrationsvolumen $r^{2}$}
-	\label{fig:ViertelrKreis}
-\end{figure}
-Werden nun die Fläche des Integrationsraumes mit der des Viertelkreises verglichen, resultieren die Wahrscheinlichkeiten, ob ein HIT or Miss Ereignis im Kreis (grau) oder ausserhalb liegt. Wird der Radius $r = 1$ gesetzt, entsprechen die Flächen gerade der Wahrscheinlichkeit. Die Abfrage, ob ein Hit vorliegt, ist bei dem Viertelkreis einfach. Ist die Entfernung des Ereignis kleiner als $r$ zum Ursprung, handelt es sich um ein Hit. Die Entfernung kann mit dem Pythagoras ausgerechnet werden.
-
-\begin{equation}
-	P_{in} = \frac{\pi}{4}
-\end{equation}
-
-\begin{equation}
-	P_{out} = 1-\frac{\pi}{4}
-\end{equation}
-
-\begin{equation}
-	Hit, wenn x^{2} + y^{2} < 1
-\end{equation}
-Um als Ergebnis der Simulation die Zahl $\pi$ angenähert zu erhalten, müssen die Hits(k) mit der Anzahl generierter MC Ereignissen(N) dividiert werden und mit 4 Multipliziert werden.
-\begin{equation}
-	\pi \approx \dfrac{4 k}{N}
-\end{equation}
 
 \end{document}
