@@ -20,6 +20,7 @@
 \usepackage{array}
 \usepackage{hyperref}
 \usepackage{xcolor}
+\usepackage{multicol}
 \usepackage{listings}
 \lstdefinestyle{Matlab}{
   numbers=left,
@@ -37,7 +38,6 @@
   numberstyle=\ttfamily\tiny
 }
 \lstdefinestyle{C}{
-  numbers=left,
   belowcaptionskip=1\baselineskip,
   breaklines=true,
   frame=L,
@@ -51,6 +51,7 @@
   stringstyle=\color{orange},
   numberstyle=\ttfamily\tiny
 }
+
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{epstopdf}
@@ -76,12 +77,8 @@
 Der Monte Carlo Algorithmus ist ein Verfahren zur Lösung numerischer Probleme durch das Ziehen von Zufallszahlen. Die Idee, mathematische bzw. physikalische Probleme mit einem stochastischen Sampling-Verfahren zu approximieren stammt polnisch-amerikanischen Mathematiker Stanisław Marcin Ulam (1909 -- 1984), welcher zu dieser Zeit im Los Alamos National Labaratory arbeitete. Seine Idee, und wie es dazu kam, beschrieb er folgendermassen: \\
 
 \begin{quote}
-\textit{“The first thoughts and attempts I made to practice [the Monte Carlo method] were suggested by a question which occurred to me in 1946 as I was convalescing from an illness and play- ing solitaires. The question was what are the chances that a Canfield solitaire laid out with 52 cards will come out successfully? After spending a lot of time trying to estimate them by pure combinatorial calculations, I wondered whether a more practical method than “abstract thinking” might not be to lay it out say one hundred times and simply observe and count the number of successful plays. This was already possible to envisage with the begin- ning of the new era of fast computers, and I immediately thought of problems of neutron diffusion and other questions of mathematical physics, and more generally how to change processes described by certain differential equations into an equivalent form interpretable as a succession of random operations. Later... [in 1946, I ] described the idea to John von Neumann and we began to plan actual calculations.”} - Stan Ulam, 1983
+\textit{“The first thoughts and attempts I made to practice [the Monte Carlo method] were suggested by a question which occurred to me in 1946 as I was convalescing from an illness and playing solitaires. The question was what are the chances that a Canfield solitaire laid out with 52 cards will come out successfully? After spending a lot of time trying to estimate them by pure combinatorial calculations, I wondered whether a more practical method than “abstract thinking” might not be to lay it out say one hundred times and simply observe and count the number of successful plays. This was already possible to envisage with the beginning of the new era of fast computers, and I immediately thought of problems of neutron diffusion and other questions of mathematical physics, and more generally how to change processes described by certain differential equations into an equivalent form interpretable as a succession of random operations. Later... [in 1946, I ] described the idea to John von Neumann and we began to plan actual calculations.”} - Stan Ulam, 1983
 \end{quote}
-
-Als erste Anwendung konnten Ulam und von Neumann mit der Monte Carlo Methode die Neutronen-Diffusion in spaltbaren Materialien simulieren. 
-
-\subsection{Anwendungen}
 
 Monte Carlo Methoden kommen überall zum Einsatz, wenn deterministische Algorithmen entweder zu komplex sind, oder gar nicht existieren. Dank zunehmender Rechenleistung sind in den letzten Jahren Simulationen wie globale Klimamodelle möglich geworden. Typische Anwendungen des Monte Carlo Algorithmus umfassen u.a.
 
@@ -91,6 +88,8 @@ Monte Carlo Methoden kommen überall zum Einsatz, wenn deterministische Algorith
 	\item Simulation von Gleichgewichtszuständen (z.B. mit Metropolis-Algorithmus)
 	\item Statistische Untersuchung von Zufallsverteilungen
 \end{itemize}
+
+\subsection{Prinzip}
 
 
 \section{Zufallszahlengeneratoren}
@@ -293,10 +292,68 @@ Obwohl der Mersenne-Twister Algorithmus sehr kompliziert scheint, ist die Ausfü
 
 
 \newpage
-\section{Tests von RNGs}
-
+\subsection{Tests von RNGs}
+%TODO: Überarbeiten
 Die Probleme beim Testen eines Zufallszahlengenerators können an folgendem Beispiel visualisiert werden: Angenommen, ein RNG soll Zufallszahlen mit Mittelwert $\mu = 7$ generieren. Wenn als erster Wert $6.5$ ausgegeben wird, ist das in Ordnung. Wenn jetzt aber als nächster Wert $7.5$ erzeugt wird, um den Mittelwert $\mu = 7$ zu erreichen, würde das den Generator vorhersehbar machen. Der Mittelwert wird nie genau $7$ betragen, sollte aber bei längeren Sequenzen in der Nähe von $7$ liegen \cite{rng:BeautifulTesting}. Diese Ungenauigkeiten verdeutlichen, dass jedes Testverfahren für RNGs gelegentlich fehlschlagen wird. Ein Test der immer erfüllt wird, deutet darauf hin dass der Ausgang des RNG zu vorhersehbar ist. \\
 
+
+\section{Erzeugen von Verteilungen}
+Wie unter ?? ausgeführt, werden Integrale mit der Monte Carlo Methode gelöst, indem die Wahrscheinlichkeitsverteilung der Zufallszahlen der Integralfunktion entspricht. Es werden also Methoden benötigt, beliebige Verteilungen zu erreichen. Obwohl verschiedene Möglichkeiten bestehen, ist es natürlich nicht möglich, alle Verteilungen mit vernünftigem Aufwand zu erreichen. Die einfachste Methode ist die im folgenden Abschnitt beschriebene Inversionsmethode. 
+
+\subsection{Inversionsmethode}
+
+Um aus der im Einheitsintervall $[0,1]$ gleichverteilten Zufallsvariable $z$  eine Zufallsvariable $x$ mit der Verteilungsfunktion $F_X(x)$ zu erhalten, muss F invertiert werden und auf $z$ angewandt werden.
+
+\begin{equation}
+	x = F^{-1}(z)
+\end{equation}
+
+Ist die Inversion von $F$ analytisch möglich, ist diese Methode einfach anwendbar. Es ist zwar möglich, $F$ numerisch zu invertieren, was jedoch häufig aufwändiger ist als die Anwendung anderer Methoden. \\
+
+In Tabelle \ref{tab:verteilungen_erzeugen} sind die mit der Inversionsmethode erstellten Algorithmen zum Generieren von Zufallszahlen einiger ausgewählter Verteilungen aufgestellt.
+
+\begin{table}[htbp]
+	\centering
+	\renewcommand{\arraystretch}{1.5}
+	\begin{tabular}{|l|l|l|}
+		\hline
+		Wahrscheinlichkeitsdichte & Wertebereich & Algorithmus \\ \hline
+		$f(x) = \frac{1}{b-a}$ & $[a,b[$ & $x = (b-a) \cdot z + a$ \\ \hline
+		$f(x) = 2x$ & $[0,1]$ & $x = \sqrt{z}$ \\ \hline
+		$f(x) = \frac{1}{k} \exp^{-x/k}$ & $]0,\infty]$ & $x = -k \ln z$ \\ \hline
+		$f(x) = - \ln x$ & $[0,1[$ & $x = z_1 \cdot z_2$ \\ \hline
+	\end{tabular}
+	\caption{Algorithmen zur Erzeugung von Zufallszahlen $x$ aus in $[0,1]$ gleichverteilten Zufallsvariablen $z$.}
+	\label{tab:verteilungen_erzeugen}
+	\renewcommand{\arraystretch}{1.0}
+\end{table}
+
+\subsection{Implementation mit Boost}
+Mit der C++ Bibliothek \textit{Boost} lassen sich nicht nur  Zufallszahlen generieren, sondern auch einfach beliebige Verteilungen auswählen. Ein kleiner Auszug der Möglichkeiten:
+
+\begin{multicols}{2}
+	\begin{itemize}
+		\item Gleichverteilung
+		\item Bernoulli-Verteilung
+		\item Binomial-Verteilung
+		\item Poisson-Verteilung
+		\item Exponential-Verteilung
+		\item Normalverteilung
+		\item $\chi^2$-Verteilung
+		\item Diskrete Verteilungen
+		\item Abschnittsweise definierte Verteilungen
+	\end{itemize}
+\end{multicols}
+
+Um eine Verteilungsfunktion auszuwählen, wird in einem ersten Schritt (wie unter ?? beschrieben), ein Generator instanziert, hier wird z.B. ein Mersenne-Twister RNG mit der aktuellen Systemzeit als Seed instanziert.
+\begin{lstlisting}[style=C]
+static mt19937 gen(time(0));
+\end{lstlisting}
+Darauf wird ausgewählt, welche Verteilungsfunktion verwendet wird. Hier wird eine Gleichverteilung im Intervall $[0,1[$ erzeugt. 
+\begin{lstlisting}[style=C]
+static uniform_01<mt19937> dist(gen); 
+\end{lstlisting}
+Darauf kann die Funktion \texttt{dist()} verwendet werden um Zufallszahlen zu generieren. Der komplette Code ist im Github-Repository \cite{rng:githubRepo} abgelegt.
 
 \newpage
 \printbibliography[heading=subbibliography]
