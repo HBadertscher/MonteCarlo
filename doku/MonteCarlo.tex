@@ -120,7 +120,7 @@ Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Qu
 \end{equation}
 
 
-\subsection{Numerische Integration}
+\subsection{Numerische Integration} \label{subsec:numIntegration}
 Einer der wichtigsten Anwendungsbereiche der Monte Carlo Methode ist die numerische Berechnung von Integralen. Dazu werden innerhalb des Definitionsbereich der zu integrierenden Funktion Zufallsereignisse generiert. Generell kann ausgesagt werden, dass das Integral
 
 \begin{equation}
@@ -157,7 +157,7 @@ Abbildung \ref{fig:integration_histogram} zeigt eine beliebige Funktion (rot), s
 Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Meist ist man dabei nicht nur am numerischen Resultat interessiert, sondern auch an den einzelnen Ereignissen, welche zu diesem Resultat geführt haben. Dazu wird der Algorithmus leicht modifiziert. Die Zufallszahlen $x_i$ werden neu nicht gleichverteilt, sondern mit der Wahrscheinlichkeitsdichtefunktion $f(x)$ bzw. der Verteilungsfunktion $F(x)$ erzeugt. Das Histogramm dieser $x_i$ entspricht der mit $N/F$ normierten Funktion $f(x)$. Das Resultat $F$ kann also durch einen Vergleich des Histogramms mit der Funktion $f(x)$ bestimmt werden. Der Vorteil dieser Methode ist, dass so die Ereignisse $x_i$ mit der richtigen Verteilung bekannt sind und ausgewertet werden könne.
 
 
-\section{Zufallszahlengeneratoren}
+\section{Zufallszahlengeneratoren} 
 
 \begin{quote}
 \textit{“Anyone who considers arithmetical methods of producing random digits is, of course, in a state of sin.”} - John von Neumann, 1951
@@ -355,17 +355,16 @@ Um sicherzustellen, dass alle 32-bit gleichverteilt sind, werden die Zufallszahl
 
 Obwohl der Mersenne-Twister Algorithmus sehr kompliziert scheint, ist die Ausführung relativ schnell. Zusammen mit den bereits beschriebenen Vorteilen hat dies dazu geführt, dass der Mersenne-Twister der Standard-Zufallszahlengenerator in vielen Bibliotheken, wie z.B. der \textit{GNU Scientific Library} ist.
 
-
 \newpage
 \subsection{Tests von RNGs}
 %TODO: Überarbeiten
 Die Probleme beim Testen eines Zufallszahlengenerators können an folgendem Beispiel visualisiert werden: Angenommen, ein RNG soll Zufallszahlen mit Mittelwert $\mu = 7$ generieren. Wenn als erster Wert $6.5$ ausgegeben wird, ist das in Ordnung. Wenn jetzt aber als nächster Wert $7.5$ erzeugt wird, um den Mittelwert $\mu = 7$ zu erreichen, würde das den Generator vorhersehbar machen. Der Mittelwert wird nie genau $7$ betragen, sollte aber bei längeren Sequenzen in der Nähe von $7$ liegen \cite{rng:BeautifulTesting}. Diese Ungenauigkeiten verdeutlichen, dass jedes Testverfahren für RNGs gelegentlich fehlschlagen wird. Ein Test der immer erfüllt wird, deutet darauf hin dass der Ausgang des RNG zu vorhersehbar ist. \\
 
 
-\section{Erzeugen von Verteilungen}
-Wie unter ?? ausgeführt, werden Integrale mit der Monte Carlo Methode gelöst, indem die Wahrscheinlichkeitsverteilung der Zufallszahlen der Integralfunktion entspricht. Es werden also Methoden benötigt, beliebige Verteilungen zu erreichen. Obwohl verschiedene Möglichkeiten bestehen, ist es natürlich nicht möglich, alle Verteilungen mit vernünftigem Aufwand zu erreichen. Die einfachste Methode ist die im folgenden Abschnitt beschriebene Inversionsmethode. 
+\subsection{Erzeugen von Verteilungen}
+Wie unter \ref{subsec:numIntegration} ausgeführt, werden Integrale häufig mit der Monte Carlo Methode gelöst, indem Zufallszahlen mit einer bestimmten Verteilung generiert werden. Es werden also Methoden benötigt, beliebige Verteilungen zu erreichen. Obwohl verschiedene Möglichkeiten bestehen, ist es natürlich nicht möglich, alle Verteilungen mit vernünftigem Aufwand zu erreichen. Die einfachste Methode ist die im folgenden Abschnitt beschriebene Inversionsmethode. 
 
-\subsection{Inversionsmethode}
+\subsubsection{Inversionsmethode}
 
 Um aus der im Einheitsintervall $[0,1]$ gleichverteilten Zufallsvariable $z$  eine Zufallsvariable $x$ mit der Verteilungsfunktion $F_X(x)$ zu erhalten, muss F invertiert werden und auf $z$ angewandt werden.
 
@@ -394,31 +393,24 @@ In Tabelle \ref{tab:verteilungen_erzeugen} sind die mit der Inversionsmethode er
 \end{table}
 
 \subsection{Implementation mit Boost}
-Mit der C++ Bibliothek \textit{Boost} lassen sich nicht nur  Zufallszahlen generieren, sondern auch einfach beliebige Verteilungen auswählen. Ein kleiner Auszug der Möglichkeiten:
+Die C++ Bibliothek \textit{Boost} bietet sehr gute Möglichkeiten zum Generieren von Zufallszahlen. Es lassen sich oben vorgestellte, wie auch verschiedene weitere Generatoren auswählen. Auch die Verteilungsfunktion kann frei gewählt werden. \\
 
-\begin{multicols}{2}
-	\begin{itemize}
-		\item Gleichverteilung
-		\item Bernoulli-Verteilung
-		\item Binomial-Verteilung
-		\item Poisson-Verteilung
-		\item Exponential-Verteilung
-		\item Normalverteilung
-		\item $\chi^2$-Verteilung
-		\item Diskrete Verteilungen
-		\item Abschnittsweise definierte Verteilungen
-	\end{itemize}
-\end{multicols}
+Um einen Zufallszahlengenerator zu erstellen wird als erstes eine Klasse vom gewünschten Generatortypen instanziert. Hier wird z.B. ein Mersenne-Twister mit der aktuellen Systemzeit als Seed erstellt.
 
-Um eine Verteilungsfunktion auszuwählen, wird in einem ersten Schritt (wie unter ?? beschrieben), ein Generator instanziert, hier wird z.B. ein Mersenne-Twister RNG mit der aktuellen Systemzeit als Seed instanziert.
 \begin{lstlisting}[style=C]
 static mt19937 gen(time(0));
 \end{lstlisting}
+
 Darauf wird ausgewählt, welche Verteilungsfunktion verwendet wird. Hier wird eine Gleichverteilung im Intervall $[0,1[$ erzeugt. 
+
 \begin{lstlisting}[style=C]
 static uniform_01<mt19937> dist(gen); 
 \end{lstlisting}
+
 Darauf kann die Funktion \texttt{dist()} verwendet werden um Zufallszahlen zu generieren. Der komplette Code ist im Github-Repository \cite{rng:githubRepo} abgelegt.
+
+Detaillierte Informationen zu den Möglichkeiten mit der Boost Random-Funktion ist auf der entsprechenden Referenz-Seite zu finden \cite{rng:boostRandom}.
+
 
 \newpage
 \printbibliography[heading=subbibliography]
