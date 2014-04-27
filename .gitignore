@@ -36,10 +36,4 @@ MonteCarlo.run.xml
 *eps-converted-to.pdf
 *-blx.bib
 presentation.pdf
-makePI
 Info.plist
-c-rand
-dev_rand
-park-miller
-mersenne-twister
-boost

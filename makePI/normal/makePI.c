@@ -8,10 +8,10 @@
 #include <limits.h>
 #include <float.h>
 
+#include "park-miller.c"
 #define NUMOFITERATIONS 10000
  
 // Function Prototypes
-double getRandom(double min, double max);
 int isInCircle(double x, double y);
  
 /* ********************************************************** *
@@ -27,11 +27,11 @@ int main(int argc, const char * argv[]) {
   else
     numOfIterations = NUMOFITERATIONS;
  
-  srand(time(NULL));
+  int seed = (time(NULL));
   
   for(i=0;i<numOfIterations;i++) {
-    x = getRandom(0,1);
-    y = getRandom(0,1);
+    x = park_miller_rand(&seed);
+    y = park_miller_rand(&seed);
 //   printf("(%f,%f)\n",x,y);
     if(isInCircle(x,y)) {
       sum++;
@@ -45,23 +45,6 @@ int main(int argc, const char * argv[]) {
   return 0;
  }
 
-/* ********************************************************** *
- * Create a Random Number between min and max                 */
-double getRandom(double min, double max)
-{
-  return (((double)rand())/RAND_MAX)*(max-min)+min;
-  
-//   FILE* devRandom;
-//   unsigned char randomChar;
-//   double randomDouble;
-//   int i;
-//   
-//   devRandom = fopen("/dev/urandom", "r");
-//   fscanf(devRandom,"%c",&randomInt);
-//   fclose(devRandom);
-//   
-//   return randomDouble;
-}
 
 /* ********************************************************** *
  * Checks if a point (x,y) is inside the unit circle          */

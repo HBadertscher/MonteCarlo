@@ -10,13 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include <unistd.h>
-#include <getopt.h>
 #include <limits.h>
-#include <fcntl.h>
-#include <alloca.h>
 
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
@@ -25,248 +19,213 @@
 #endif
 
 
-/*
- * \brief Auxiliary function to read OpenCL code from a file
- *
- * This function reads the contents of a file and invokes the
- * clCreateProgramWithSource to create a program.
- */
-cl_program	cluCreateProgramWithFile(cl_context context,
-                                     const char *filename, cl_int *err) {
-	// first check that the file exists, but using stat will also give
-	// the file size which can later be used to size a buffer
-	struct stat	sb;
-	if (stat(filename, &sb) < 0) {
-		*err = -1;
-		return NULL;
-	}
-    
-	// open the file for reading
-	int	fd = open(filename, O_RDONLY);
-	if (fd < 0) {
-		*err = -1;
-		return NULL;
-	}
-    
-	// read the file data into a memory buffer, allocated on the stack
-	// from the file size info in the stat structure received previously
-	size_t	length[1];
-	length[0] = sb.st_size;
-	char	*source[1];
-	source[0] = alloca(sb.st_size);
-	if (sb.st_size != read(fd, source[0], sb.st_size)) {
-		*err = -1;
-		return NULL;
-	}
-	close(fd);
-    
-	// use the clCreateProgramWithSource function to create the program
-	cl_program	program;
-	program = clCreateProgramWithSource(context, 1, (const char **)source,
-                                        length, err);
-
-	return program;
-}
-
+#include "cluCreateProgramWithFile.c"
+#include "park-miller.c"
 
 // main
 int main(int argc, const char * argv[])
 {
-    unsigned int numOfCalc = 1000;
-    unsigned int count = 1024*10000;
-    int seed;
-    time_t startTime;
-    time_t elTime;
-    
-//    float result[count];                   // results returned from device
-    float* result;
-    float pi;
-    int err;                            // error code returned from api calls
-    int i;
+  //---------------------------------------------------------------------
+  // Variable Declarations
+  int i;                              // Can be used for any for-loop
+  unsigned long sim;                  // Number of Simulations
 
-    size_t global;                      // global domain size for our calculation
-    size_t local;                       // local domain size for our calculation
-    
-    cl_device_id device_id;             // compute device id
-    cl_context context;                 // compute context
-    cl_command_queue commands;          // compute command queue
-    cl_program program;                 // compute program
-    cl_kernel kernel;                   // compute kernel
-    
-    cl_mem output;                      // device memory used for the output array
-    
-    // Get Platforms
-    //
-    
-    seed = (int)time(NULL);
-    result = calloc(count,sizeof(float));
-    if(result==0) {
-      printf("Couldn't allocate enough memory for result :( \n");
-      return EXIT_FAILURE;
-    }
-    
-    cl_uint num_platforms;
-    int gpu=1;
-    int platform = 0;
+  int debug = 1;                      // Debug Flag
+  int platform = 0;                   // Which platform to use
 
-    err = clGetPlatformIDs(0, NULL, &num_platforms);
-    if( err != CL_SUCCESS)
-    {
-        printf("Error: Didn't get number of platforms\n");
-        return EXIT_FAILURE;
-    }
-    cl_platform_id *platformIds = (cl_platform_id *)malloc(
-        num_platforms * sizeof(cl_platform_id));
-    err = clGetPlatformIDs(num_platforms, platformIds, 0);
-    if (err != CL_SUCCESS)
-    {
-        printf("Strange Error: Got number of Platforms but no ID\n");
-        return EXIT_FAILURE;
-    }
-    
-    for(i=0;i<num_platforms;i++)
-    {
-       size_t size;
+  int err = CL_SUCCESS;               // error flag
+  
+  //---------------------------------------------------------------------
+  // Read input arguments
+  if(argc < 2) 
+  {
+    sim = 1024; 
+  }
+  else
+  {
+    sim = atoi(argv[1]);
+  }
+  
+  if(debug) fprintf(stderr,"Number of sims:\t %lu\n", sim);
+  
+  //---------------------------------------------------------------------
+  // Get Platforms and plot names
+  cl_uint num_platforms;
+  err |= clGetPlatformIDs(0, NULL, &num_platforms);
+  cl_platform_id *platformIds = (cl_platform_id *)malloc(
+                            num_platforms * sizeof(cl_platform_id));
+  err |= clGetPlatformIDs(num_platforms, platformIds, 0);
+  for(i=0;i<num_platforms;i++)
+  {
+    size_t size;
+    cl_platform_id id = platformIds[i];
+    err |= clGetPlatformInfo(id,CL_PLATFORM_NAME,0,NULL,&size);
+    char* name = (char*)alloca(sizeof(char)*size);
+    err |= clGetPlatformInfo(id,CL_PLATFORM_NAME,size,name,NULL);
+    if(debug) fprintf(stderr,"Platform %d: %s\n",i,name);
+  }
+  
+  //---------------------------------------------------------------------
+  // Get a compute device and infos about it
+  cl_device_id device_id;             // compute device id
+  err |= clGetDeviceIDs(platformIds[platform],CL_DEVICE_TYPE_GPU, 1, &device_id,NULL);
+  
+  cl_ulong	globalmemsize = 0, localmemsize = 0, cachesize = 0;
+	size_t	paramsize = sizeof(globalmemsize);
+	size_t	paramsizeret = 0;
+	clGetDeviceInfo(device_id, CL_DEVICE_GLOBAL_MEM_SIZE, 
+		paramsize, &globalmemsize, &paramsizeret);
+	clGetDeviceInfo(device_id, CL_DEVICE_LOCAL_MEM_SIZE, 
+		paramsize, &localmemsize, &paramsizeret);
+	clGetDeviceInfo(device_id, CL_DEVICE_GLOBAL_MEM_CACHE_SIZE, 
+		paramsize, &cachesize, &paramsizeret);
 
-        cl_platform_id id = platformIds[i];
-        err = clGetPlatformInfo(id,CL_PLATFORM_NAME,0,NULL,&size);
-        char* name = (char*)alloca(sizeof(char)*size);
-        err = clGetPlatformInfo(id,CL_PLATFORM_NAME,size,name,NULL);
-        printf("Platform %d: %s\n",i,name);
-    }
+	cl_uint	computeunits = 0;
+	paramsize = sizeof(computeunits);
+	clGetDeviceInfo(device_id, CL_DEVICE_MAX_COMPUTE_UNITS,
+		paramsize, &computeunits, &paramsizeret);
 
-    // Connect to compute device
-    //
-    err = clGetDeviceIDs(platformIds[platform], gpu ? CL_DEVICE_TYPE_GPU : CL_DEVICE_TYPE_CPU, 1, &device_id, NULL);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to create a device group!\n");
-        return EXIT_FAILURE;
-    }
+	cl_uint cacheline = 0;
+	paramsize = sizeof(cacheline);
+	clGetDeviceInfo(device_id, CL_DEVICE_GLOBAL_MEM_CACHELINE_SIZE,
+		paramsize, &cacheline, &paramsizeret);
 
-    // Create a compute context
-    //
-    context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
-    if (!context)
-    {
-        printf("Error: Failed to create a compute context!\n");
-        return EXIT_FAILURE;
-    }
-    
-    // Create a command commands
-    //
-    commands = clCreateCommandQueue(context, device_id, 0, &err);
-    if (!commands)
-    {
-        printf("Error: Failed to create a command commands!\n");
-        return EXIT_FAILURE;
-    }
-    
-    //program = clCreateProgramWithSource(context, 1, (const char **) & KernelSource, NULL, &err);
-    program = cluCreateProgramWithFile(context,"makePI.cl", &err);
-    if (!program) {
-        printf("Error: Failed to create compute program!\n");
+	cl_uint	vectorwidth = 0;
+	paramsize = sizeof(vectorwidth);
+	clGetDeviceInfo(device_id, CL_DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT,
+		paramsize, &vectorwidth, &paramsizeret);
+
+	cl_bool	unified = 0;
+	paramsize = sizeof(unified);
+	clGetDeviceInfo(device_id, CL_DEVICE_HOST_UNIFIED_MEMORY,
+		paramsize, &unified, &paramsizeret);
+  if(debug == 1) {
+    fprintf(stderr, "unified memory:  %s\n",(unified) ? "yes" : "no");
+		fprintf(stderr, "global memory:   %lu\n", (unsigned long)globalmemsize);
+		fprintf(stderr, "local memory:    %lu\n", (unsigned long)localmemsize);
+		fprintf(stderr, "cache size:      %lu\n", (unsigned long)cachesize);
+		fprintf(stderr, "cache line size: %u\n", cacheline);
+		fprintf(stderr, "compute units:   %u\n", computeunits);
+		fprintf(stderr, "vector width:    %u\n", vectorwidth);
+  }
+ 
+  //---------------------------------------------------------------------
+  // Initialize OpenCL-Stuff
+  cl_context	context;
+  context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
+  
+  cl_command_queue	commands;
+  commands = clCreateCommandQueue(context, device_id, 0, &err);
+  
+  if(err != CL_SUCCESS) {
+    fprintf(stderr,"Something went wrong in the very beginning: %d\n",err);
+    return EXIT_FAILURE;
+  }
+  
+  //---------------------------------------------------------------------
+  // Load and build program
+  cl_program	program = cluCreateProgramWithFile(context,"makePI.cl", &err);
+  	
+	err |= clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
+  	
+  if (err) {
+	  fprintf(stderr, "%s:%d: cannot compile program: %d\n",__FILE__, __LINE__, err);
+		size_t	l = 32 * 1024;
+		char	*log = (char *)malloc(l);
+		err |= clGetProgramBuildInfo(program, device_id,CL_PROGRAM_BUILD_LOG,l, log, &l);
+		if (err) {
+			fprintf(stderr, "%s:%d: cannot retrieve log: %d\n",__FILE__, __LINE__, err);
+			return EXIT_FAILURE;
+		}
+		fprintf(stderr, "compile log:\n%*s\n", (int)l, log);
 		return EXIT_FAILURE;
 	}
+	
+	//---------------------------------------------------------------------
+  // Create Kernel
+  cl_kernel	kernel = clCreateKernel(program, "getPoint", &err);
+  
+  // Get memory requirements
+  cl_ulong	localmemreq = 0;
+  err = clGetKernelWorkGroupInfo(kernel, device_id,CL_KERNEL_LOCAL_MEM_SIZE, sizeof(localmemreq), &localmemreq,NULL);
+  if(debug) fprintf(stderr, "local mem req:   %lu\n", (unsigned long)localmemreq);
+  
+  // Get Workgroup size
+  size_t	workgroupsize;
+  err |= clGetKernelWorkGroupInfo(kernel, device_id, CL_KERNEL_WORK_GROUP_SIZE, sizeof(workgroupsize), &workgroupsize, NULL);
+  if(debug) fprintf(stderr, "work group size: %lu\n", (unsigned long)workgroupsize);
 
-    // Build the program executable
-    //
-    err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
-    if (err != CL_SUCCESS)
-    {
-        size_t len;
-        char buffer[2048];
-        
-        printf("Error: Failed to build program executable!\n");
-        clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
-        printf("%s\n", buffer);
-        exit(1);
-    }
-    
-    // Create the compute kernel in the program we wish to run
-    //
-    kernel = clCreateKernel(program, "getPoint", &err);
-    if (!kernel || err != CL_SUCCESS)
-    {
-        printf("Error: Failed to create compute kernel!\n");
-        exit(1);
-    }
-    
-    // Create the input and output arrays in device memory for our calculation
-    //
-    output = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(float)*count, NULL, NULL);
-    if (!output)
-    {
-        printf("Error: Failed to allocate device memory!\n");
-        exit(1);
-    }
-    
-    // Set the arguments to our compute kernel
-    //
-    err = 0;
-    err |= clSetKernelArg(kernel, 0, sizeof(cl_mem), &output);
-    err |= clSetKernelArg(kernel, 1, sizeof(unsigned int), &numOfCalc);
-    err |= clSetKernelArg(kernel, 2, sizeof(int), &seed);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to set kernel arguments! %d\n", err);
-        exit(1);
-    }
-
-    // Get the maximum work group size for executing the kernel on the device
-    //
-    err = clGetKernelWorkGroupInfo(kernel, device_id, CL_KERNEL_WORK_GROUP_SIZE, sizeof(local), &local, NULL);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to retrieve kernel work group info! %d\n", err);
-        exit(1);
-    }
-
-    // Execute the kernel using the maximum number of work group items for this device
-    //
-    startTime = time(NULL);
-    global = count;//local*((int)count/local);
-    err = clEnqueueNDRangeKernel(commands, kernel, 1, NULL, &global, &local, 0, NULL, NULL);
-    if (err)
-    {
-        printf("Error: Failed to execute kernel! %d\n",err);
-        return EXIT_FAILURE;
-    }
-    
-    // Wait for the command commands to get serviced before reading back results
-    //
-    clFinish(commands);
-    elTime = difftime(time(NULL),startTime);
-
-    // Read back the results from the device to verify the output
-    //
-    err = clEnqueueReadBuffer( commands, output, CL_TRUE, 0, sizeof(float)*count, result, 0, NULL, NULL );
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to read output array! %d\n", err);
-        exit(1);
-    }
-
-    
-    // Validate our results
-    //
-    
-    pi = 0;
-    for(i=0; i<count; i++)
-    {
-        pi += result[i];
-    }
-    pi = 4 * pi / count;
-    printf("Estimated value of PI: %f\n", pi);
-    printf("Elapsed time: %f sec\n", (float)elTime);
-
-    
-    // release all the objects
-	clReleaseProgram(program);
-	clReleaseKernel(kernel);
-	clReleaseCommandQueue(commands);
-	clReleaseContext(context);
-    
-	return EXIT_SUCCESS;
+	//---------------------------------------------------------------------
+  // Set Kernel Arguments
+  
+  int* xin = calloc(sizeof(int),sim);
+  int* yin = calloc(sizeof(int),sim);
+  if(xin == NULL || yin == NULL) {
+    fprintf(stderr,"Failed to allocate input buffers.\n");
+    return EXIT_FAILURE;
+  }
+  int seed = time( NULL );
+  for(i=0; i<sim; i++) {
+    xin[i] = park_miller_rand(&seed);
+  }
+  for(i=0; i<sim; i++) {
+    yin[i] = park_miller_rand(&seed);
+  }
+  
+  cl_mem globx = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(int)*sim, NULL, NULL);
+  cl_mem globy = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int)*sim, NULL, NULL);
+  
+  err |= clEnqueueWriteBuffer( commands, globx, CL_TRUE, 0, sizeof(int)*sim, xin, 0, NULL, NULL);
+  err |= clEnqueueWriteBuffer( commands, globy, CL_TRUE, 0, sizeof(int)*sim, yin, 0, NULL, NULL);
+  
+  err |= clSetKernelArg(kernel, 0, sizeof(cl_mem), &globx);
+  err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &globy);
+  
+  if(err) {
+    fprintf(stderr,"Something's wrong with the Kernel Arguments: %d\n", err);
+    return EXIT_FAILURE;
+  }
+  
+  free(xin);
+  free(yin);
+	//---------------------------------------------------------------------
+  // Execute Kernel
+  size_t local = workgroupsize;
+  size_t global = workgroupsize * ((sim / workgroupsize) + ((sim % workgroupsize) ? 1 : 0));
+  if(debug) fprintf(stderr,"global size:\t%d\n",(unsigned int)global);
+  
+  err = clEnqueueNDRangeKernel(commands, kernel, 1, NULL, &global, &local, 0, NULL, NULL);
+  clFinish(commands);
+  
+  //---------------------------------------------------------------------
+  // Read and analyse results
+  int* result = calloc(sizeof(int),sim);
+  if(result == NULL) {
+    fprintf(stderr,"Failed to allocate result buffer.\n");
+    return EXIT_FAILURE;
+  }
+  err |= clEnqueueReadBuffer( commands, globx, CL_TRUE, 0, sizeof(int)*sim, result, 0, NULL, NULL );
+  
+  unsigned long sum = 0;
+  for(i=0; i<sim; i++)
+  {
+    if(result[i] == 1)
+      sum ++;
+  }
+  double est_pi = 4.0 * (double)sum / (double)sim;
+  fprintf(stderr, "Estimated PI: %lf\n", est_pi);
+  
+	//---------------------------------------------------------------------
+  // Clean up
+  free(result);
+  
+  clReleaseMemObject(globx);
+  clReleaseMemObject(globy);
+  clReleaseProgram(program);
+  clReleaseKernel(kernel);
+  clReleaseCommandQueue(commands);
+  clReleaseContext(context);
+  
+  return EXIT_SUCCESS;
 }
 
