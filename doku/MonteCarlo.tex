@@ -91,7 +91,45 @@ Monte Carlo Methoden kommen überall zum Einsatz, wenn deterministische Algorith
 
 \subsection{Prinzip}
 
+\section{Anwendungen}
 
+\subsection{Numerische Integration}
+Die Monte-Carlo-Methode kann zur numerischen Bestimmung von Integralen benutzt werden. Dazu werden in dem Definitionsbereich der zu integrierenden Funktion Zufallsereignisse generiert. Generell kann ausgesagt werden, dass das Integral
+
+\begin{equation}
+	I = \int_a^b f(x) dx
+\end{equation} 
+
+mit $N$ im Intervall $[a,b]$ gleichverteilten Zufallszahlen $x_i$ durch
+
+\begin{equation}
+	\hat{I} = (b-a) \cdot \frac{1}{N} \sum_{i=1}^{N} f(x_i)
+\end{equation}
+
+approximiert werden kann. Der relative Fehler sinkt dabei mit $\frac{1}{N}$. Während für analytisch lösbare Integrale und solche mit kleinen Dimensionen ($\leq 4$) andere Möglichkeiten oft schneller sind, ist die Monte Carlo Methode besonders bei hohen Dimensionen oder sehr komplizierten Integrationsgrenzen verbreitet. \\
+
+Der Algorithmus lässt sich sehr einfach beschreiben:
+\begin{enumerate}
+	\item Finde das Maximum $f_{max}$ der Funktion $f(x)$.
+	\item Erzeuge $N$ im Intervall $[a,b]$ gleichverteilte Zufallszahlen $x_i$.
+	\item Erzeuge für jedes $x_i$ ein in $[0,f_{max}]$ gleichverteiltes $y_i$.
+	\item Falls $y_i < f(x_i)$ wird das $x_i$ akzeptiert, sonst verworfen.
+	\item Wenn $N^*$ die Anzahl der akzeptierten $x_i$ ist, dann ist $F = \frac{N^*}{N}(b-a)f_max$.
+\end{enumerate}
+
+Abbildung \ref{fig:integration_histogram} zeigt eine beliebige Funktion (rot), sowie die akzeptierten Ereignisse (blau) und die nicht akzeptierten Ereignisse (grün). \\
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=8cm]{images/integration_poisson.eps}
+	\caption{Histogramm durch Zufallsereignisse}
+	\label{fig:integration_histogram}
+\end{figure}
+
+Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Meist ist man dabei nicht nur am numerischen Resultat interessiert, sondern auch an den einzelnen Ereignissen, welche zu diesem Resultat geführt haben. Dazu wird der Algorithmus leicht modifiziert. Die Zufallszahlen $x_i$ werden neu nicht gleichverteilt, sondern mit der Wahrscheinlichkeitsdichtefunktion $f(x)$ bzw. der Verteilungsfunktion $F(x)$ erzeugt. Das Histogramm dieser $x_i$ entspricht der mit $N/F$ normierten Funktion $f(x)$. Das Resultat $F$ kann also durch einen Vergleich des Histogramms mit der Funktion $f(x)$ bestimmt werden. Der Vorteil dieser Methode ist, dass so die Ereignisse $x_i$ mit der richtigen Verteilung bekannt sind und ausgewertet werden könne.
+
+
+\clearpage
 \section{Zufallszahlengeneratoren}
 
 \begin{quote}
@@ -359,10 +397,6 @@ Darauf kann die Funktion \texttt{dist()} verwendet werden um Zufallszahlen zu ge
 \printbibliography[heading=subbibliography]
 \end{refsection}
 
-\section{Integration}
-
-Die Monte-Carlo-Methode kann zur nummerischen Bestimmung von Integralen benutzt werden. Dazu werden in dem Definitionsbereich der Integrandenfunktion Zufallsereignisse generiert, deren Gesamtheit das Integral bestimmt. Im einzelnen können dazu die Methoden herangezogen werden, die im vorigen Abschnitt zu Erzeugung von Ereignissen benutzt wurden. Für die Bestimmung eines Integrals ist es wichtig, mit welcher Methode am effektivsten eine gewünschte Genauigkeit erreicht werden kann.
-% TODO HIT or Miss, etc...?
 
 \newpage
 
