@@ -119,6 +119,26 @@ Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Qu
 	\hat{\pi} = 4 \cdot \frac{k}{N}
 \end{equation}
 
+\subsubsection{Ergebnisse}
+
+Für eine erste Analyse, in welchem Rahmen sich die Berechnungszeiten und die erreichte Genauigkeit befinden, wird das zuvor diskutierte Beispiel in MATLAB implementiert und ausgewertet. Dabei wird noch keine Parallelisierung vorgenommen, die Resultate stammen von einem mit 2,7 GHz getaktetem i7, wobei nur ein Kern verwendet wird.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=14cm]{images/Berechnungszeit.eps}
+    \caption{Benötigte Zeit zur Abschätzung von $\pi$}
+    \label{fig:Berechnungszeit}
+\end{figure}
+
+Bei sehr wenigen HM Ereignissen dominiert die Rechenzeit für Initialisierungen etc. Bereits ab ca. 100 Ereignissen ist eine direkte Proportionalität zwischen Rechenzeit und Anzahl Ereignissen erkennbar. Pro Sekunde werden rund $16,7 * 10^{6}$ Ereignisse berechnet.   
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=14cm]{images/Fehler.eps}
+    \caption{Betrag der Abweichung}
+    \label{fig:Fehler}
+\end{figure}
+
 
 \subsection{Numerische Integration} \label{subsec:numIntegration}
 Einer der wichtigsten Anwendungsbereiche der Monte Carlo Methode ist die numerische Berechnung von Integralen. Dazu werden innerhalb des Definitionsbereich der zu integrierenden Funktion Zufallsereignisse generiert. Generell kann ausgesagt werden, dass das Integral
