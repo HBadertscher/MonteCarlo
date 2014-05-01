@@ -135,7 +135,16 @@ Folgende Resultate stammen von einem Computer mit einem 2.7 GHz i7 Prozessor.
 
 Es ist deutlich ersichtlich, dass bei wenigen Iterationen die Rechenzeit für Initialisierungen überwiegt. Ab etwa 100 Iterationen ist eine direkte Proportionalität zwischen der Rechenzeit und der Anzahl Iterationen erkennbar. Pro Sekunde werden hier etwa $16.7 \cdot 10^6$ Ereignisse berechnet. \\
 
-Die Genauigkeit wird, wie zu erwarten ist, mit einem Faktor $1/\sqrt{N}$ zunehmen. 
+Die Genauigkeit wird, wie zu erwarten ist, mit einem Faktor $1/\sqrt{N}$ zunehmen. Der relative Fehler kann mittels Effizienz $\epsilon$ und Anzahl angenommene Ereignisse $k$ abgeschätzt werden.
+
+\begin{equation}
+	\epsilon = \frac{k}{N}
+\end{equation} 
+
+\begin{equation}
+	Relative Fehler = \sqrt{\frac{1-\epsilon}{k}}
+\end{equation} 
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=8cm]{images/Fehler.eps}
