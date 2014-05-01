@@ -48,13 +48,51 @@
 	
 \section[Einführung]{Einführung in die Monte Carlo Methode}
 \begin{frame}{Einführung in die Monte Carlo Methode}
-	blabla
+	Stanisław Marcin Ulam, 1946 
+	\begin{itemize}
+	\item<1-> Numerische Integration
+	\item<1-> Simulation von dynamischen Prozessen
+	\item<1-> Simulation von Gleichgewichtszuständen
+	\item<1-> Statistische Untersuchung von Zufallsverteilungen
+	\end{itemize}
 \end{frame}
 
-\section{Abschätzen von Pi}
-\begin{frame}
-Inhalt...
+\section{Nummerische Integration}
+\begin{frame}{Nummerische Integration}
+\only<1>{\begin{figure}\includegraphics[width=0.75\linewidth]{images/kreis_hitmiss.eps}\end{figure}}
 \end{frame}
+
+\subsection{Abschätzung des Wertes von Pi}
+\begin{frame}{Herleitung}
+	\begin{itemize}
+	\item<1-> $A_{\text{Kreis}} = \pi r^{2}$
+	\item<1-> $A_{\text{Quadrat}} = 4r^2$
+	\item<1-> $\hat{\pi} = \frac{A_{\text{Kreis}}}{r^2} = 4 \frac{A_{\text{Kreis}}}{A_{\text{Quadrat}}}$
+	\item<1-> $x^2 + y^2 \leq r$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Rechenaufwand}
+\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{images/Berechnungszeit.eps}
+	\end{figure}
+	\begin{itemize}
+	\item<1-> $16.7 \cdot 10^6$ Iterationen pro Sekunde
+	\end{itemize}
+\end{frame}
+\begin{frame}{Genauigkeit}
+\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/Fehler.eps}
+	\end{figure}
+	\begin{itemize}
+		\item<1-> Effizienz $\epsilon = \frac{k}{N}$
+		\item<1->Relativer Fehler $= \sqrt{\frac{1-\epsilon}{k}}$
+		\item<1-> Die Genauigkeit nimmt um $\dfrac{1}{\sqrt{N}}$ zu
+	\end{itemize}
+\end{frame}
+
 
 \section{Zufallszahlen}
 \begin{frame}{Zufallszahlen}
@@ -62,6 +100,7 @@ Inhalt...
 	\textit{“Anyone who considers arithmetical methods of producing random digits is, of course, in a state of sin.”} \\ - John von Neumann, 1951
 	\end{quote}
 \end{frame}
+
 \begin{frame}{Zufallszahlen}
 	Übersicht:
 	\begin{itemize}
