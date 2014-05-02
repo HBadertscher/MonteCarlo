@@ -144,8 +144,9 @@
 
 	\begin{itemize}
 		\item \texttt{rand()} Funktion von C
-		\item $x_{i+1} =  \left( 1103515245 \: x_i + 12345\right) \mod{2^{31}}$
+		\item Übliche Implementation: \\ $x_{i+1} =  \left( 1103515245 \: x_i + 12345\right) \mod{2^{31}}$
 		\item Startwert mit \texttt{srand(int seed)} gesetzt. 
+		\item Genaue Implementation nicht spezifiziert - gefährlich.
 	\end{itemize}
 \end{frame}
 
@@ -156,12 +157,12 @@
 \end{frame}
 
 \begin{frame}{Linear Congruental Generators}
-	Paper von S.Park, K.Miller, 1988 mit Ziel: \\ neuen \textbf{Minimal Standard}
+	Paper von S.Park, K.Miller, 1988. \\ Ziel: neuen \textbf{Minimal Standard}
 	
 	\begin{itemize}
 		\item<2-> $x_{i+1} = \left( 16'807 \: x_i \right) \mod{2^{31}-1}$ 
 		\item<3-> Modul $m$: Primzahl $\rightarrow$ maximale Periode
-		\item<4-> Faktor $a$: $7^5$ $\rightarrow$ komplett Zufällige Sequenz
+		\item<4-> Faktor $a$: $7^5$ $\rightarrow$ komplett zufällige Sequenz
 		\item<5-> Trotzdem einfach auf 32-bit System implementierbar.
 	\end{itemize}
 \end{frame}
@@ -181,9 +182,7 @@ double random(int* seed) {
 \end{frame}
 \begin{frame}{Park-Miller Generator}
 
-	\begin{equation*}
-		m = aq + r
-	\end{equation*}
+	Mit $m = aq + r$ gilt:
 	\begin{equation*}
 		a x \text{ mod } m = 
 			\begin{cases}
