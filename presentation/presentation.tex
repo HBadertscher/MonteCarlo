@@ -72,6 +72,26 @@
 	\end{itemize}
 \end{frame}
 
+\section{Implementation Pi}
+\begin{frame}{Implementation}
+	\begin{itemize}
+		\item Implementation in C: Just do it!
+		\item Parallelisierung: perfekt für OpenCL:
+			\begin{itemize}
+				\item<3-> CPU: Alles initialisieren, Resultat berechnen.
+				\item<3-> GPU: Einzelne Punkte berechnen.
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+\begin{frame}{Implementation}
+	\begin{itemize}
+		\item Aufteilung: $N$ Punkte $=$ $N$ Worker.
+		\item Zufallszahlen auf GPU? Worker-ID als Seed? \\
+		$\rightarrow$ von CPU übergeben. Nachteil: nicht parallel!
+		\item Summe und Resultat auf CPU berechnen.
+	\end{itemize}
+\end{frame}
+
 \begin{frame}{Rechenaufwand}
 \begin{figure}[h]
 		\centering
