@@ -233,4 +233,29 @@ double random(int* seed) {
 	\end{itemize}
 \end{frame}
 
+\subsection[Boost]{Implementation in C++ mit Boost}
+\begin{frame}{Implementation in C++ mit Boost}
+	\begin{itemize}
+		\item Boost: gratis C++ Source Library
+		\item enthält u.a. Algorithmen, Container, Mathematik, ... 
+		\item Teile bereits C++11 Standard
+		\item Schöne, einfache Random-Funktionen mit:
+		\begin{itemize}
+			\item 30 verschiedenen RNG
+			\item Verteilungsfunktionen und Wertebereiche frei wählbar
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+\begin{frame}{Implementation in C++ mit Boost}
+	\begin{itemize}
+		\item Generator instanzieren: \\
+			\texttt{static mt19937 gen(time(0));}
+		\item Verteilungsfunktion wählen: \\
+			\texttt{static uniform\_01 <mt19937 > dist(gen);}
+		\item Fertig. \\
+			\texttt{x = dist();}
+	\end{itemize}
+\end{frame}
+
+
 \end{document}
