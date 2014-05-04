@@ -24,7 +24,7 @@
 }
 
 
-\title{Die Monte Carlo Methode}
+\title[Monte Carlo]{Die Monte Carlo Methode}
 \author[Amiet, Badertscher]{Dorian Amiet, Hannes Badertscher}
 \date [MathSem II, FS14]{MathSem II, \today}
 
@@ -57,8 +57,8 @@
 	\end{itemize}
 \end{frame}
 
-\section{Nummerische Integration}
-\begin{frame}{Nummerische Integration}
+\section{Numerische Integration}
+\begin{frame}{Numerische Integration}
 
 	\begin{minipage}{5cm}
 		\includegraphics[width=5cm]{images/kreis_hitmiss.eps}
@@ -75,7 +75,7 @@
 
 \subsection{Abschätzung des Wertes von Pi}
 
-\section{Implementation Pi}
+\section[Implementation]{Implementation Pi}
 \begin{frame}{Implementation}
 	\begin{itemize}
 		\item Implementation in C: Just do it!
@@ -96,27 +96,44 @@
 \end{frame}
 
 \begin{frame}{Rechenaufwand}
-\begin{figure}[h]
+	Implementation in C:
+	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{images/Berechnungszeit.eps}
+		\includegraphics[width=7cm]{images/Berechnungszeit_C.eps}
 	\end{figure}
-	\begin{itemize}
-	\item<1-> $16.7 \cdot 10^6$ Iterationen pro Sekunde
-	\end{itemize}
+	11.863 Mio. Berechnungen pro Sec.
 \end{frame}
-\begin{frame}{Genauigkeit}
-	\begin{minipage}{6cm}
-		\includegraphics[width=6cm]{images/Fehler.eps}
-	\end{minipage}
-	\begin{minipage}{4cm}
-		\begin{itemize}
-			\item<1-> Effizienz $\epsilon = \frac{k}{N}$
-			\item<1->Relativer Fehler $= \sqrt{\frac{1-\epsilon}{k}}$
-			\item<1-> Die Genauigkeit nimmt um $\dfrac{1}{\sqrt{N}}$ zu
-		\end{itemize}
-	\end{minipage}
+\begin{frame}{Rechenaufwand}
+	Implementation in OpenCL:
+	\begin{figure}
+		\centering
+		\includegraphics[width=7cm]{images/Berechnungszeit_OpenCL.eps} 
+	\end{figure}
+	48.909 Mio. Berechnungen pro Sec.
 \end{frame}
 
+\begin{frame}{Genauigkeit}
+	\begin{itemize}
+		\item<1-> Effizienz $\epsilon = \frac{k}{N}$
+		\item<1->Relativer Fehler $= \sqrt{\frac{1-\epsilon}{k}}$
+		\item<1-> Die Genauigkeit nimmt um $\dfrac{1}{\sqrt{N}}$ zu
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Genauigkeit}
+	Implementation in C
+	\begin{figure}
+		\centering
+		\includegraphics[width=7cm]{images/Abweichung_C.eps}
+	\end{figure}
+\end{frame}
+\begin{frame}{Genauigkeit}
+	Implementation in OpenCL
+	\begin{figure}
+		\centering
+		\includegraphics[width=7cm]{images/Abweichung_OpenCl.eps}
+	\end{figure}
+\end{frame}
 
 \section{Zufallszahlen}
 \begin{frame}{Zufallszahlen}
