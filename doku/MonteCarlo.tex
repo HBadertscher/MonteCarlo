@@ -134,6 +134,13 @@ Folgende Resultate stammen von einem Computer mit einem 2.7 GHz i7 Prozessor.
 \end{figure}
 
 Es ist deutlich ersichtlich, dass bei wenigen Iterationen die Rechenzeit für Initialisierungen überwiegt. Ab etwa 100 Iterationen ist eine direkte Proportionalität zwischen der Rechenzeit und der Anzahl Iterationen erkennbar. Pro Sekunde werden hier etwa $16.7 \cdot 10^6$ Ereignisse berechnet. \\
+\clearpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=8cm]{images/Fehler.eps}
+    \caption{Betrag der Abweichung}
+    \label{fig:Fehler}
+\end{figure}
 
 Die Genauigkeit wird, wie zu erwarten ist, mit einem Faktor $1/\sqrt{N}$ zunehmen. Der relative Fehler kann mittels Effizienz $\epsilon$ und Anzahl angenommene Ereignisse $k$ abgeschätzt werden.
 
@@ -143,14 +150,9 @@ Die Genauigkeit wird, wie zu erwarten ist, mit einem Faktor $1/\sqrt{N}$ zunehme
 
 \begin{equation}
 	\text{Relativer Fehler} = \sqrt{\frac{1-\epsilon}{k}}
-\end{equation} 
+\end{equation}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=8cm]{images/Fehler.eps}
-    \caption{Betrag der Abweichung}
-    \label{fig:Fehler}
-\end{figure}
+Anhand der beiden Formeln können einige wichtige Erkenntnisse gewonnen werden. So ist es von Vorteil, die Effizienz so nahe an eins wie möglich zu halten. Dies wird erreicht, indem das Zielgebiet $\Omega$ möglichst klein gehalten wird. Für die Plausibilitätsüberprüfung werden die Extremfälle betrachtet. Das kleinstmögliche $\Omega$ ist gerade die Zielfunktion selber. Dabei wird jedes mögliche HM-Ereignis ein Hit. Dies führt dazu, dass $k = N$ und somit $\epsilon$ = 1. Der relative Fehler ist somit bereits nach einer Iteration bei null. Bei einem sehr grossen $\Omega$ wird die Wahrscheinlichkeit, dass ein Hit generiert wird, sehr klein. Somit bleibt $k$ auch nach vielen Operationen klein, wobei $N$ gross wird. $\epsilon$ wird dabei fast null und der relative Fehler belauft sich auf rund $1/\sqrt{k}$.
 
 \subsubsection{Implementation in OpenCL}
 Bei der Monte Carlo Analyse werden sehr viele komplett unabhängige Berechnungen durchgeführt. Dadurch ist OpenCL perfekt geeignet um das Problem zu parallelisieren. Die Architektur ist wie folgt aufgebaut:
@@ -163,9 +165,6 @@ Bei der Monte Carlo Analyse werden sehr viele komplett unabhängige Berechnungen
 \end{figure}
 
 
-
-
-\clearpage
 \subsection{Numerische Integration} \label{subsec:numIntegration}
 Einer der wichtigsten Anwendungsbereiche der Monte Carlo Methode ist die numerische Berechnung von Integralen. Dazu werden innerhalb des Definitionsbereich der zu integrierenden Funktion Zufallsereignisse generiert. Generell kann ausgesagt werden, dass das Integral
 
