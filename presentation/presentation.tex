@@ -55,9 +55,27 @@
 	\end{itemize}
 \end{frame}
 
-\section{Numerische Integration}
+\subsection{Algorithmus}
+\section{Numerische Integration - Algorithmus}
 \begin{frame}{Numerische Integration}
+	Ziel: Integriere $	I = \int_a^b f(x) dx$ \\
+	\only<1>{
+		\includegraphics[width=7cm]{images/integration_poisson.eps}
+	}
+	\only<2>{
+	Algorithmus:
+	\begin{enumerate}
+		\item Finde das Maximum $f_{max}$ der Funktion $f(x)$.
+		\item Erzeuge $N$ im Intervall $[a,b]$ gleichverteilte Zufallszahlen $x_i$.
+		\item Erzeuge für jedes $x_i$ ein in $[0,f_{max}]$ gleichverteiltes $y_i$.
+		\item Falls $y_i < f(x_i)$ wird das $x_i$ akzeptiert, sonst verworfen.
+		\item Wenn $N^*$ die Anzahl der akzeptierten $x_i$ ist, dann ist $F = \frac{N^*}{N}(b-a)f_max$.
+	\end{enumerate}}
+\end{frame}
 
+\subsection{Beispiel}
+\begin{frame}{Numerische Integration - Beispiel}
+	Beispiel: Abschätzung des Wertes von Pi
 	\begin{minipage}{5cm}
 		\includegraphics[width=5cm]{images/kreis_hitmiss.eps}
 	\end{minipage}
@@ -305,7 +323,7 @@ double random(int* seed) {
 	
 	\vspace{1cm}
 	
-	Haben Sie noch \\
+	Habt Ihr noch \\
 	Fragen, Anmerkungen, Probleme?
 \end{frame}
 
