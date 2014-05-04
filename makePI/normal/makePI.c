@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <sys/time.h>
 #include <limits.h>
 #include <float.h>
 
@@ -21,14 +22,17 @@ int main(int argc, const char * argv[]) {
   double x,y;
   int sum;
   double numOfIterations;
-  
+  struct timeval start, stop;  
+  float elapsedTime;
+
   if(argc > 1)
     sscanf(argv[1],"%lf",&numOfIterations);
   else
     numOfIterations = NUMOFITERATIONS;
  
   int seed = (time(NULL));
-  
+  gettimeofday(&start,NULL);  
+
   for(i=0;i<numOfIterations;i++) {
     x = park_miller_rand(&seed);
     y = park_miller_rand(&seed);
@@ -37,11 +41,12 @@ int main(int argc, const char * argv[]) {
       sum++;
     }
   }
-  
+  gettimeofday(&stop,NULL);
   //printf("Sum: %d \n", sum);
   
-  printf("%f\n", 4*((double)sum)/((double)numOfIterations));
-  
+  printf("Result: %f\n", 4*((double)sum)/((double)numOfIterations));
+  elapsedTime = (float)(stop.tv_usec - start.tv_usec) / 1.0e6 + (stop.tv_sec - start.tv_sec); 
+  printf("Elapsed Time: %f\n",elapsedTime);
   return 0;
  }
 
