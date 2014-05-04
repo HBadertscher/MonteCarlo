@@ -59,18 +59,21 @@
 
 \section{Nummerische Integration}
 \begin{frame}{Nummerische Integration}
-\only<1>{\begin{figure}\includegraphics[width=0.75\linewidth]{images/kreis_hitmiss.eps}\end{figure}}
+
+	\begin{minipage}{5cm}
+		\includegraphics[width=5cm]{images/kreis_hitmiss.eps}
+	\end{minipage}
+	\begin{minipage}{5cm}
+		\begin{itemize}
+		\item<1-> $A_{\text{Kreis}} = \pi r^{2}$
+		\item<1-> $A_{\text{Quadrat}} = 4r^2$
+		\item<1-> $\hat{\pi} = \frac{A_{\text{Kreis}}}{r^2} = 4 \frac{A_{\text{Kreis}}}{A_{\text{Quadrat}}}$
+		\item<1-> $x^2 + y^2 \leq r$
+		\end{itemize}
+	\end{minipage}
 \end{frame}
 
 \subsection{Abschätzung des Wertes von Pi}
-\begin{frame}{Herleitung}
-	\begin{itemize}
-	\item<1-> $A_{\text{Kreis}} = \pi r^{2}$
-	\item<1-> $A_{\text{Quadrat}} = 4r^2$
-	\item<1-> $\hat{\pi} = \frac{A_{\text{Kreis}}}{r^2} = 4 \frac{A_{\text{Kreis}}}{A_{\text{Quadrat}}}$
-	\item<1-> $x^2 + y^2 \leq r$
-	\end{itemize}
-\end{frame}
 
 \section{Implementation Pi}
 \begin{frame}{Implementation}
@@ -102,15 +105,16 @@
 	\end{itemize}
 \end{frame}
 \begin{frame}{Genauigkeit}
-\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.5\linewidth]{images/Fehler.eps}
-	\end{figure}
-	\begin{itemize}
-		\item<1-> Effizienz $\epsilon = \frac{k}{N}$
-		\item<1->Relativer Fehler $= \sqrt{\frac{1-\epsilon}{k}}$
-		\item<1-> Die Genauigkeit nimmt um $\dfrac{1}{\sqrt{N}}$ zu
-	\end{itemize}
+	\begin{minipage}{6cm}
+		\includegraphics[width=6cm]{images/Fehler.eps}
+	\end{minipage}
+	\begin{minipage}{4cm}
+		\begin{itemize}
+			\item<1-> Effizienz $\epsilon = \frac{k}{N}$
+			\item<1->Relativer Fehler $= \sqrt{\frac{1-\epsilon}{k}}$
+			\item<1-> Die Genauigkeit nimmt um $\dfrac{1}{\sqrt{N}}$ zu
+		\end{itemize}
+	\end{minipage}
 \end{frame}
 
 
