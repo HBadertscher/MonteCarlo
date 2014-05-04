@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 #include <time.h>
 #include <limits.h>
 
@@ -18,6 +19,8 @@
 #include <CL/cl.h>
 #endif
 
+#include <math.h>
+#define M_PI 3.14159265358979323846
 
 #include "cluCreateProgramWithFile.c"
 #include "park-miller.c"
@@ -32,6 +35,9 @@ int main(int argc, const char * argv[])
 
   int debug = 1;                      // Debug Flag
   int platform = 0;                   // Which platform to use
+
+  struct timeval start,stop;          // Used for time measurement  
+  float elapsed_time;
 
   int err = CL_SUCCESS;               // error flag
   
@@ -159,27 +165,34 @@ int main(int argc, const char * argv[])
   // Set Kernel Arguments
   
   int* xin = calloc(sizeof(int),sim);
-  int* yin = calloc(sizeof(int),sim);
-  if(xin == NULL || yin == NULL) {
+ // int* yin = calloc(sizeof(int),sim);
+  if(xin == NULL /*|| yin == NULL*/) {
     fprintf(stderr,"Failed to allocate input buffers.\n");
     return EXIT_FAILURE;
   }
+  
+  gettimeofday(&start, NULL);
   int seed = time( NULL );
   for(i=0; i<sim; i++) {
     xin[i] = park_miller_rand(&seed);
+    park_miller_rand(&seed);
   }
-  for(i=0; i<sim; i++) {
-    yin[i] = park_miller_rand(&seed);
-  }
+  
+  //for(i=0; i<sim; i++) {
+    //yin[i] = park_miller_rand(&seed);
+  //}
+  gettimeofday(&stop, NULL);
+  elapsed_time = (float)(stop.tv_usec - start.tv_usec) / 1.0e6 + (stop.tv_sec - start.tv_sec);
+  fprintf(stderr,"Elapsed Time for Random: %f  sec\n", elapsed_time);
   
   cl_mem globx = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(int)*sim, NULL, NULL);
-  cl_mem globy = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int)*sim, NULL, NULL);
+  //cl_mem globy = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int)*sim, NULL, NULL);
   
   err |= clEnqueueWriteBuffer( commands, globx, CL_TRUE, 0, sizeof(int)*sim, xin, 0, NULL, NULL);
-  err |= clEnqueueWriteBuffer( commands, globy, CL_TRUE, 0, sizeof(int)*sim, yin, 0, NULL, NULL);
+  //err |= clEnqueueWriteBuffer( commands, globy, CL_TRUE, 0, sizeof(int)*sim, yin, 0, NULL, NULL);
   
   err |= clSetKernelArg(kernel, 0, sizeof(cl_mem), &globx);
-  err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &globy);
+ // err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &globy);
   
   if(err) {
     fprintf(stderr,"Something's wrong with the Kernel Arguments: %d\n", err);
@@ -187,16 +200,19 @@ int main(int argc, const char * argv[])
   }
   
   free(xin);
-  free(yin);
+  //free(yin);
 	//---------------------------------------------------------------------
   // Execute Kernel
+  gettimeofday(&start,NULL);
   size_t local = workgroupsize;
   size_t global = workgroupsize * ((sim / workgroupsize) + ((sim % workgroupsize) ? 1 : 0));
   if(debug) fprintf(stderr,"global size:\t%d\n",(unsigned int)global);
   
   err = clEnqueueNDRangeKernel(commands, kernel, 1, NULL, &global, &local, 0, NULL, NULL);
   clFinish(commands);
-  
+  gettimeofday(&stop,NULL); 
+  elapsed_time = (float)(stop.tv_usec - start.tv_usec) / 1.0e6 + (stop.tv_sec - start.tv_sec);
+  fprintf(stderr,"Elapsed Time for OpenCL: %f sec\n", elapsed_time);
   //---------------------------------------------------------------------
   // Read and analyse results
   int* result = calloc(sizeof(int),sim);
@@ -214,13 +230,14 @@ int main(int argc, const char * argv[])
   }
   double est_pi = 4.0 * (double)sum / (double)sim;
   fprintf(stderr, "Estimated PI: %lf\n", est_pi);
+  fprintf(stderr, "Abweichung: %lf\n",fabs(M_PI - est_pi));  
   
-	//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
   // Clean up
   free(result);
   
   clReleaseMemObject(globx);
-  clReleaseMemObject(globy);
+  // clReleaseMemObject(globy);
   clReleaseProgram(program);
   clReleaseKernel(kernel);
   clReleaseCommandQueue(commands);

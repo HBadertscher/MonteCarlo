@@ -1,5 +1,5 @@
 
-double park_miller_rand(int* seed)
+int park_miller_rand(int* seed)
 {
   const int a = 16807;
   const int m = 2147483647;

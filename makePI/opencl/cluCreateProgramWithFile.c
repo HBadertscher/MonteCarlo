@@ -7,7 +7,8 @@
 #include <fcntl.h>
 #include <alloca.h>
 #include <sys/stat.h>
-
+#include <stdio.h>
+#include <unistd.h>
 
 /*
  * \brief Auxiliary function to read OpenCL code from a file
