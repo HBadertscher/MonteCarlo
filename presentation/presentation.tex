@@ -28,8 +28,6 @@
 \author[Amiet, Badertscher]{Dorian Amiet, Hannes Badertscher}
 \date [MathSem II, FS14]{MathSem II, \today}
 
-% Aufzählungen immer schrittweise zeigen:
-\beamerdefaultoverlayspecification{<+->}
 
 % Gliederung am Anfang jedes Unterabschnittes anzeigen:
 \AtBeginSection[]
@@ -50,10 +48,10 @@
 \begin{frame}{Einführung in die Monte Carlo Methode}
 	Stanisław Marcin Ulam, 1946 
 	\begin{itemize}
-	\item<1-> Numerische Integration
-	\item<1-> Simulation von dynamischen Prozessen
-	\item<1-> Simulation von Gleichgewichtszuständen
-	\item<1-> Statistische Untersuchung von Zufallsverteilungen
+	\item Numerische Integration
+	\item Simulation von dynamischen Prozessen
+	\item Simulation von Gleichgewichtszuständen
+	\item Statistische Untersuchung von Zufallsverteilungen
 	\end{itemize}
 \end{frame}
 
@@ -81,8 +79,8 @@
 		\item Implementation in C: Just do it!
 		\item Parallelisierung: perfekt für OpenCL:
 			\begin{itemize}
-				\item<3-> CPU: Alles initialisieren, Resultat berechnen.
-				\item<3-> GPU: Einzelne Punkte berechnen.
+				\item<2-> CPU: Alles initialisieren, Resultat berechnen.
+				\item<2-> GPU: Einzelne Punkte berechnen.
 			\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -175,9 +173,9 @@
 	\begin{itemize}
 		\item IBM \texttt{RANDU} Generator: in 60er Jahren Standard Random-Funktion auf IBM System/360
 		\item $x_{i+1} = \left( 65539 \: x_i \right) \mod{2^{31}}$ 
-		\item<4-> \textit{``really horrible''} - Donald E. Knuth.
+		\item<3-> \textit{``really horrible''} - Donald E. Knuth.
 	\end{itemize}
-	\only<3>{\begin{figure}\includegraphics[width=0.75\linewidth]{images/ibm_randu.eps}\end{figure}}
+	\only<2>{\begin{figure}\includegraphics[width=0.75\linewidth]{images/ibm_randu.eps}\end{figure}}
 \end{frame}
 
 \subsection{Park-Miller Generator}
@@ -202,9 +200,9 @@
 	
 	\begin{itemize}
 		\item<2-> $x_{i+1} = \left( 16'807 \: x_i \right) \mod{2^{31}-1}$ 
-		\item<3-> Modul $m$: Primzahl $\rightarrow$ maximale Periode
-		\item<4-> Faktor $a$: $7^5$ $\rightarrow$ komplett zufällige Sequenz
-		\item<5-> Trotzdem einfach auf 32-bit System implementierbar.
+		\item<2-> Modul $m$: Primzahl $\rightarrow$ maximale Periode
+		\item<2-> Faktor $a$: $7^5$ $\rightarrow$ komplett zufällige Sequenz
+		\item<2-> Trotzdem einfach auf 32-bit System implementierbar.
 	\end{itemize}
 \end{frame}
 \begin{frame}[fragile]{Park-Miller Generator}
@@ -297,5 +295,21 @@ double random(int* seed) {
 	\end{itemize}
 \end{frame}
 
+\section{Fazit}
+\begin{frame}{Fazit Monte Carlo Methode}
+	\begin{itemize}
+		\item Sehr einfaches Prinzip - sehr mächtig.
+		\item Dank Parallelisierung immer schneller und genauer.
+		\item Ab ca. Dimension 4 herkömmlichen Methoden überlegen.
+	\end{itemize}
+\end{frame}
+\begin{frame}{Fazit Zufallszahlen}
+	\begin{itemize}
+		\item Zufallszahlen sind nicht zufällig!
+		\item Nie einfach irgendeinen Generator verwenden.
+		\item Minimal Standard RNG (Park-Miller)
+		\item Achtung: nicht tauglich für Kryptographie.
+	\end{itemize}
+\end{frame}
 
 \end{document}
