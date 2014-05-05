@@ -101,11 +101,31 @@
 	\end{itemize}
 \end{frame}
 \begin{frame}{Implementation}
+	Ansatz I: \\
+	
 	\begin{itemize}
-		\item Aufteilung: $N$ Punkte $=$ $N$ Worker.
-		\item Zufallszahlen auf GPU? Worker-ID als Seed? \\
-		$\rightarrow$ von CPU übergeben. Nachteil: nicht parallel!
-		\item Summe und Resultat auf CPU berechnen.
+		\item Zufallszahlen werden auf der CPU berechnet und als Parameter übergeben.
+		\item Langsam, da seriell.
+		\item Hoher Speicherbedarf.
+		\item dafür: gute Zufallszahlen.
+	\end{itemize}
+\end{frame}
+\begin{frame}{Implementation}
+	Ansatz II: \\
+	
+	\begin{itemize}
+		\item Zufallszahlen werden auf der GPU mit Worker-ID als Seed generiert.
+		\item Sehr schnell, kaum Speicherbedarf.
+		\item Aber: nicht zufällig!
+	\end{itemize}
+\end{frame}
+\begin{frame}{Implementation}
+	Ansatz III: \\
+	
+	\begin{itemize}
+		\item Auf CPU werden qualitativ hochwertige Zufallszahlen generiert.
+		\item Auf GPU wird in jedem Worker eine Serie von Punkten berechnet.
+		\item Nicht 100\% parallel, dafür schnell und viele Punkte.
 	\end{itemize}
 \end{frame}
 
@@ -118,7 +138,7 @@
 	11.863 Mio. Berechnungen pro Sec.
 \end{frame}
 \begin{frame}{Rechenaufwand}
-	Implementation in OpenCL:
+	Implementation in OpenCL (Ansatz I):
 	\begin{figure}
 		\centering
 		\includegraphics[width=7cm]{images/Berechnungszeit_OpenCL.eps} 
