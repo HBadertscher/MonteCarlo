@@ -113,11 +113,17 @@
 \begin{frame}{Implementation}
 	Ansatz II: \\
 	
+	\begin{minipage}{5cm}
 	\begin{itemize}
 		\item Zufallszahlen werden auf der GPU mit Worker-ID als Seed generiert.
 		\item Sehr schnell, kaum Speicherbedarf.
 		\item Aber: nicht zufällig!
 	\end{itemize}
+	\end{minipage}
+	\begin{minipage}{5cm}
+		\includegraphics[width=5cm]{images/idAsSeed.eps}
+	\end{minipage}
+
 \end{frame}
 \begin{frame}{Implementation}
 	Ansatz III: \\
