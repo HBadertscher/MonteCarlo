@@ -94,77 +94,6 @@ Monte Carlo Methoden kommen überall zum Einsatz, wenn deterministische Algorith
 \section{Funktionsprinzip}
 Die Monte Carlo Methode ist ein Überbegriff für verschiedene Möglichkeiten zur Algorithmen zur numerischen Berechnung / Simulation mittels Zufallsereignissen. Ein weit verbreiteter und sehr flexibler Ansatz ist das sogenannte Hit-or-Miss Verfahren. Dabei werden Zufallszahlen generiert und geprüft ob diese eine bestimmte Bedingung erfüllen oder nicht. Mit dem Verhältnis Hit / Miss wird das gewünschte Ergebnis approximiert. 
 
-\subsection{Abschätzung des Wertes von Pi}
-Als Einführungsbeispiel für die Monte Carlo Methode wird die Zahl $\pi$ mit einer Hit-or-Miss Methode abgeschätzt. Ein Kreis mit Radius $r$ hat eine Grundfläche von $A_{\text{Kreis}} = \pi r^{2}$.  Damit muss in einem Intervall von $[-r,+r]$ integriert werden, was eine Fläche von $A_{\text{Quadrat}} = 4r^2$ ergibt. Damit lässt sich $\pi$ approximieren als
-
-\begin{equation}
-	\hat{\pi} = \frac{A_{\text{Kreis}}}{r^2} = 4 \frac{A_{\text{Kreis}}}{A_{\text{Quadrat}}}
-\end{equation}
-
-Das Verhältnis der Fläche des Kreises zur Fläche des Quadrats entspricht der Wahrscheinlichkeit, dass ein Paar Zufallszahlen $(x_i,y_i)$ mit $x_i,y_i \leq r$ innerhalb des Kreises mit Radius $r$ liegen. Dies wird mit folgender Formel überprüft:
-
-\begin{equation}
-	x^2 + y^2 \leq r
-	\label{equ:innerhalbKreis}
-\end{equation}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=6cm]{images/kreis_hitmiss.eps}
-	\caption{Kreis}
-	\label{fig:KreisHitMiss}
-\end{figure}
-
-Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Quadranten reduziert werden. Für $N$ Iterationen, von welchen $k$ die Bedingung \ref{equ:innerhalbKreis} ergibt sich somit folgende Abschätzung für Pi:
-
-\begin{equation}
-	\hat{\pi} = 4 \cdot \frac{k}{N}
-\end{equation}
-
-\subsubsection{Implementation in C}
-Die Implementation dieses Beispiels in C ist relativ kurz und übersichtlich: Über $N$ Iterationen wird jeweils ein Paar Zufallszahlen $(x,y)$ generiert und die Gleichung \ref{equ:innerhalbKreis} $x^2 + y^2$ berechnet. Ist das Resultat $<1$ wird eine Summe erhöht. Das Resultat ist schlussendlich die Summe geteilt durch die Anzahl Iterationen $N$ mal 4 Da diese Lösung nicht parallel abläuft, steigt der Rechenaufwand linear mit der Anzahl Iterationen. \\
-
-Folgende Resultate stammen von einem Computer mit einem 2.7 GHz i7 Prozessor. 
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=8cm]{images/Berechnungszeit.eps}
-    \caption{Benötigte Zeit zur Abschätzung von $\pi$}
-    \label{fig:Berechnungszeit}
-\end{figure}
-
-Es ist deutlich ersichtlich, dass bei wenigen Iterationen die Rechenzeit für Initialisierungen überwiegt. Ab etwa 100 Iterationen ist eine direkte Proportionalität zwischen der Rechenzeit und der Anzahl Iterationen erkennbar. Pro Sekunde werden hier etwa $16.7 \cdot 10^6$ Ereignisse berechnet. \\
-\clearpage
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=8cm]{images/Fehler.eps}
-    \caption{Betrag der Abweichung}
-    \label{fig:Fehler}
-\end{figure}
-
-Die Genauigkeit wird, wie zu erwarten ist, mit einem Faktor $1/\sqrt{N}$ zunehmen. Der relative Fehler kann mittels Effizienz $\epsilon$ und Anzahl angenommene Ereignisse $k$ abgeschätzt werden.
-
-\begin{equation}
-	\epsilon = \frac{k}{N}
-\end{equation} 
-
-\begin{equation}
-	\text{Relativer Fehler} = \sqrt{\frac{1-\epsilon}{k}}
-\end{equation}
-
-Anhand der beiden Formeln können einige wichtige Erkenntnisse gewonnen werden. So ist es von Vorteil, die Effizienz so nahe an eins wie möglich zu halten. Dies wird erreicht, indem das Zielgebiet $\Omega$ möglichst klein gehalten wird. Für die Plausibilitätsüberprüfung werden die Extremfälle betrachtet. Das kleinstmögliche $\Omega$ ist gerade die Zielfunktion selber. Dabei wird jedes mögliche HM-Ereignis ein Hit. Dies führt dazu, dass $k = N$ und somit $\epsilon$ = 1. Der relative Fehler ist somit bereits nach einer Iteration bei null. Bei einem sehr grossen $\Omega$ wird die Wahrscheinlichkeit, dass ein Hit generiert wird, sehr klein. Somit bleibt $k$ auch nach vielen Operationen klein, wobei $N$ gross wird. $\epsilon$ wird dabei fast null und der relative Fehler belauft sich auf rund $1/\sqrt{k}$.
-
-\subsubsection{Implementation in OpenCL}
-Bei der Monte Carlo Analyse werden sehr viele komplett unabhängige Berechnungen durchgeführt. Dadurch ist OpenCL perfekt geeignet um das Problem zu parallelisieren. Die Architektur ist wie folgt aufgebaut:
-
-\begin{figure}[htbp]
-	\centering
-	\adjustbox{width=6cm}{\input{images/opencl.tex}}
-	\caption{Ablauf der Implementation in OpenCL}
-	\label{fig:AblaufOpenCL}
-\end{figure}
-
-
 \subsection{Numerische Integration} \label{subsec:numIntegration}
 Einer der wichtigsten Anwendungsbereiche der Monte Carlo Methode ist die numerische Berechnung von Integralen. Dazu werden innerhalb des Definitionsbereich der zu integrierenden Funktion Zufallsereignisse generiert. Generell kann ausgesagt werden, dass das Integral
 
@@ -201,7 +130,109 @@ Abbildung \ref{fig:integration_histogram} zeigt eine beliebige Funktion (rot), s
 
 Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Meist ist man dabei nicht nur am numerischen Resultat interessiert, sondern auch an den einzelnen Ereignissen, welche zu diesem Resultat geführt haben. Dazu wird der Algorithmus leicht modifiziert. Die Zufallszahlen $x_i$ werden neu nicht gleichverteilt, sondern mit der Wahrscheinlichkeitsdichtefunktion $f(x)$ bzw. der Verteilungsfunktion $F(x)$ erzeugt. Das Histogramm dieser $x_i$ entspricht der mit $N/F$ normierten Funktion $f(x)$. Das Resultat $F$ kann also durch einen Vergleich des Histogramms mit der Funktion $f(x)$ bestimmt werden. Der Vorteil dieser Methode ist, dass so die Ereignisse $x_i$ mit der richtigen Verteilung bekannt sind und ausgewertet werden könne.
 
+\subsection{Abschätzung des Wertes von Pi}
+Als Einführungsbeispiel für die Monte Carlo Methode wird die Zahl $\pi$ mit einer Hit-or-Miss Methode abgeschätzt. Ein Kreis mit Radius $r$ hat eine Grundfläche von $A_{\text{Kreis}} = \pi r^{2}$.  Damit muss in einem Intervall von $[-r,+r]$ integriert werden, was eine Fläche von $A_{\text{Quadrat}} = 4r^2$ ergibt. Damit lässt sich $\pi$ approximieren als
 
+\begin{equation}
+	\hat{\pi} = \frac{A_{\text{Kreis}}}{r^2} = 4 \frac{A_{\text{Kreis}}}{A_{\text{Quadrat}}}
+\end{equation}
+
+Das Verhältnis der Fläche des Kreises zur Fläche des Quadrats entspricht der Wahrscheinlichkeit, dass ein Paar Zufallszahlen $(x_i,y_i)$ mit $x_i,y_i \leq r$ innerhalb des Kreises mit Radius $r$ liegen. Dies wird mit folgender Formel überprüft:
+
+\begin{equation}
+	x^2 + y^2 \leq r
+	\label{equ:innerhalbKreis}
+\end{equation}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=6cm]{images/kreis_hitmiss.eps}
+	\caption{Kreis}
+	\label{fig:KreisHitMiss}
+\end{figure}
+
+Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Quadranten reduziert werden. Für $N$ Iterationen, von welchen $k$ die Bedingung \ref{equ:innerhalbKreis} ergibt sich somit folgende Abschätzung für Pi:
+
+\begin{equation}
+	\hat{\pi} = 4 \cdot \frac{k}{N}
+\end{equation}
+
+
+
+\section{Implementation}
+\subsection{Implementation in C}
+Die Implementation dieses Beispiels in C ist relativ kurz und übersichtlich: Über $N$ Iterationen wird jeweils ein Paar Zufallszahlen $(x,y)$ generiert und die Gleichung \ref{equ:innerhalbKreis} $x^2 + y^2$ berechnet. Ist das Resultat $<1$ wird eine Summe erhöht. Das Resultat ist schlussendlich die Summe geteilt durch die Anzahl Iterationen $N$ mal 4 Da diese Lösung nicht parallel abläuft, steigt der Rechenaufwand linear mit der Anzahl Iterationen. \\
+
+Folgende Resultate stammen von einem Computer mit einem 2.7 GHz i7 Prozessor. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=8cm]{images/Berechnungszeit.eps}
+    \caption{Benötigte Zeit zur Abschätzung von $\pi$}
+    \label{fig:Berechnungszeit}
+\end{figure}
+
+Es ist deutlich ersichtlich, dass bei wenigen Iterationen die Rechenzeit für Initialisierungen überwiegt. Ab etwa 100 Iterationen ist eine direkte Proportionalität zwischen der Rechenzeit und der Anzahl Iterationen erkennbar. Pro Sekunde werden hier etwa $16.7 \cdot 10^6$ Ereignisse berechnet. \\
+\clearpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=8cm]{images/Fehler.eps}
+    \caption{Betrag der Abweichung}
+    \label{fig:Fehler}
+\end{figure}
+
+Die Genauigkeit wird, wie zu erwarten ist, mit einem Faktor $1/\sqrt{N}$ zunehmen. Der relative Fehler kann mittels Effizienz $\epsilon$ und Anzahl angenommene Ereignisse $k$ abgeschätzt werden.
+
+\begin{equation}
+	\epsilon = \frac{k}{N}
+\end{equation} 
+
+\begin{equation}
+	\text{Relativer Fehler} = \sqrt{\frac{1-\epsilon}{k}}
+\end{equation}
+
+Anhand der beiden Formeln können einige wichtige Erkenntnisse gewonnen werden. So ist es von Vorteil, die Effizienz so nahe an eins wie möglich zu halten. Dies wird erreicht, indem das Zielgebiet $\Omega$ möglichst klein gehalten wird. Für die Plausibilitätsüberprüfung werden die Extremfälle betrachtet. Das kleinstmögliche $\Omega$ ist gerade die Zielfunktion selber. Dabei wird jedes mögliche HM-Ereignis ein Hit. Dies führt dazu, dass $k = N$ und somit $\epsilon$ = 1. Der relative Fehler ist somit bereits nach einer Iteration bei null. Bei einem sehr grossen $\Omega$ wird die Wahrscheinlichkeit, dass ein Hit generiert wird, sehr klein. Somit bleibt $k$ auch nach vielen Operationen klein, wobei $N$ gross wird. $\epsilon$ wird dabei fast null und der relative Fehler belauft sich auf rund $1/\sqrt{k}$.
+
+\subsection{Implementation in OpenCL}
+Bei der Monte Carlo Analyse werden sehr viele komplett unabhängige Berechnungen durchgeführt. Dadurch ist OpenCL perfekt geeignet um das Problem zu parallelisieren. Die grösste Schwierigkeit dabei ist die Generierung von Zufallszahlen auf der GPU. 
+
+\subsubsection{Ansatz I: Zufallszahlen auf CPU}
+Die einfachste Lösung für das Problem ist es, auf der CPU qualitativ hochwertige Zufallszahlen zu generieren und in einem Array an OpenCL zu übergeben. Jeder Worker liest seine zwei Zufallszahlen aus und rechnet das Resultat für diesen Punkt aus. So ist sichergestellt, dass die Zufallszahlen wirklich zufällig sind, und somit das Resultat gegen den korrekten Wert konvergiert. Die Nachteile sind, dass die Berechnung der Zufallszahlen seriell, und somit langsam, ist, sowie der hohe Speicherverbrauch. Dieser kann um einen Faktor 2 reduziert werden, indem nur eine Zufallszahl übergeben wird und jeder Worker sich eine zweite Zahl berechnet. \\
+
+Wird diese Variante mit C bzw. OpenCL umgesetzt, stellen sich die erwarteten Resultate ein: Die Rechenzeit steigt linear mit der Anzahl Punkte, die Berechnung ist jedoch deutlich schneller als bei serieller Berechnung auf der CPU. Mit 48.909 Mio Berechnungen pro Sekunde ist die parallelisierte Version um Faktor 5 schneller  als die serielle Implementation.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=8cm]{images/Berechnungszeit_OpenCL.eps}
+	\caption{Berechnungszeit mit OpenCL}
+	\label{fig:OpenCL_Berechnungszeit}
+\end{figure}
+
+
+\subsubsection{Ansatz II: Zufallszahlen auf GPU}
+Da Zufallszahlen mathematisch berechnet werden, liegt es nahe, diese auf der GPU zu berechnen. Als Startwert (seed), kann z.B. die Worker-ID verwendet werden. So verfügen alle Worker über unabhängige Zufallszahlen. Die meisten Algorithmen sind jedoch nur dazu geeignet, von einem Startwert aus eine lange Folge unabhängiger Zufallszahlen zu berechnen. Wird der Algorithmus nach nur 2 Werten mit einem anderen Startwert neu gestartet, ergibt sich kein besonders zufälliges Muster. Abbildung \ref{fig:OpenCL_ID_Seed} zeigt den Ausgang eines Zufallszahlengenerators in Abhängigkeit des Startwertes. Werden diese Werte für die Monte Carlo Simulation verwendet, wird das Ergebnis nicht gegen den korrekten Wert konvergieren. 
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=8cm]{images/idAsSeed.eps}
+	\caption{Zufallszahlen auf GPU mit Worker-ID als Seed}
+	\label{fig:OpenCL_ID_Seed}
+\end{figure}
+
+\subsubsection{Ansatz III: Mischform}
+Die beste Lösung liegt in einer Mischform der beiden Ansätze: Auf der CPU wird eine geringe Anzahl qualitativ hochwertiger Zufallszahlen generiert. Mit diesen können Zufallszahlen-Generatoren auf der GPU initialisiert werden. Damit sich dieser Aufwand lohnt, wird pro Worker nicht nur ein Punkt berechnet, sondern eine Serie von Punkten. Das empfohlene Vorgehen lautet wie folgt:
+\begin{enumerate}
+	\item Abschätzen der Anzahl nötiger Iterationen $N$.
+	\item Bestimmen des Zielsystems und der Anzahl parallel ausführbarer Workers $M$.
+	\item Generieren von $M$ hochwertiger Zufallszahlen auf der CPU.
+	\item Übergabe dieser $M$ Zahlen an OpenCL, Start des Kernels.
+	\item Jeder Worker berechnet $N/M$ Punkte und gibt das Resultat zurück.
+	\item Zusammenführen und Auswerten der Resultate der einzelnen Worker auf der CPU.
+\end{enumerate}
+
+Mit diesem Verfahren lässt sich die vorhandene Hardware gut ausnutzen, ohne an Genauigkeit durch schlechte Zufallszahlen zu verlieren. 
+
+\clearpage
 \section{Zufallszahlengeneratoren} 
 
 \begin{quote}
@@ -212,7 +243,6 @@ Die Generierung von Zufallszahlen ist absolut essentiell für die Monte Carlo Me
 
 In Software ist es deutlich schwieriger, ``gute'' Random Number Generators (RNGs) zu realisieren. Technisch gesehen sind Software RNGs immer \textit{Pseudo} Random Number Generators (pRNGs),  denn der Ausgangswert eines deterministischen Programms kann per Definition nicht zufällig sein. Die Schwierigkeit ist es, Zahlen zu generieren, die aus der Perspektive des Anwenders komplett zufällig sind, obwohl sie eindeutig mathematisch definiert sind.
 
-\newpage
 \subsection{Random-Device} \label{subsec:RandomDev}
 
 Auf Unix-Systemen steht mit dem sog. Random-Device (/dev/random) ein Zufallszahlengenerator sehr hoher Güte zur Verfügung. Dieser sammelt das Rauschen von Gerätetreibern in einem Entropie-Pool und generiert daraus Zufallszahlen, welche auch höchsten Anforderungen im Bereich der Kryptografie genügen. Der Nachteil ist, dass sobald dieser Entropie-Pool erschöpft ist keine Zufallszahlen mehr generiert werden können. Mit dem Device /dev/urandom wurde Abhilfe geschaffen, was jedoch mit dem Nachteil erkauft wird, dass beim Unterschreiten einer gewissen Entropie-Schwelle nur Pseudozufallszahlen generiert werden, welche unter Umständen von einem potentiellen Angreifer berechnet werden könnten. Den meisten Anforderungen genügt dies jedoch trotzdem. \\
@@ -221,16 +251,7 @@ Das Random-Device kann von einem Programm wie ein File eingebunden werden und Zu
 
 Ein Code-Snippet zur Verwendung des Random-Device ist im Github-Repository \cite{rng:githubRepo} zu finden.
 
-Abbildung \ref{fig:dev_rand_histogram} zeigt ein Histogramm von $1'000'000$ Zufallszahlen zwischen $0$ und $1$, welche vom Random-Device eingelesen wurden.
 
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=8cm]{images/dev_rand_histogram.eps}
-	\caption{Histogramm von $1'000'000$ Zufallzahlen im Interval $[0,1]$ des Random-Device}
-	\label{fig:dev_rand_histogram}
-\end{figure}
-
-\newpage
 \subsection{Multiplikativ kongruentielle Generatoren (LCG)} \label{subsec:LCG}
 Eine der populärsten Methoden zur Generierung von Zufallszahlen ist die multiplikativ kongruentielle Methode. Solche Generatoren werden häufig als \textit{linear congruential generator (LCG)} bezeichnet. Dabei werden Zufallszahlen rekursiv nach folgender Vorschrift berechnet:
 
@@ -291,11 +312,10 @@ für alle $k$. Diese hohe Korrelation ist in Abbildung \ref{fig:IBMRandu} darges
 	\label{fig:IBMRandu}
 \end{figure}
 
-
 \subsubsection{Die rand() Funktion von C}
 Durch die einfache und sehr effiziente Berechnung finden LCG Generatoren viel Verbreitung in der Praxis. So verwendet die C-Funktion \texttt{rand()} nach dem LCG-Algorithmus mit den Konstanten $a=1103515245$, $c=12345$, $m=2^{31}$, und dem mit der Funktion \texttt{srand()} gesetzten Startwert. \cite{rng:randFunction} Eine gängige Praxis ist es, den Startwert mit der aktuellen Systemzeit zu initialisieren. Ein entsprechendes Code-Snippet liegt im Github-Repository bei. \cite{rng:githubRepo} \\
 
-\newpage
+
 \subsection{Lehmer Generator} \label{subsec:Lehmer}
 Der Lehmer-Generator ist eine Unterart der LCG Generatoren, nach folgender Rekursionsvorschrift:
 
@@ -400,13 +420,8 @@ Um sicherzustellen, dass alle 32-bit gleichverteilt sind, werden die Zufallszahl
 
 Obwohl der Mersenne-Twister Algorithmus sehr kompliziert scheint, ist die Ausführung relativ schnell. Zusammen mit den bereits beschriebenen Vorteilen hat dies dazu geführt, dass der Mersenne-Twister der Standard-Zufallszahlengenerator in vielen Bibliotheken, wie z.B. der \textit{GNU Scientific Library} ist.
 
-\newpage
-\subsection{Tests von RNGs}
-%TODO: Überarbeiten
-Die Probleme beim Testen eines Zufallszahlengenerators können an folgendem Beispiel visualisiert werden: Angenommen, ein RNG soll Zufallszahlen mit Mittelwert $\mu = 7$ generieren. Wenn als erster Wert $6.5$ ausgegeben wird, ist das in Ordnung. Wenn jetzt aber als nächster Wert $7.5$ erzeugt wird, um den Mittelwert $\mu = 7$ zu erreichen, würde das den Generator vorhersehbar machen. Der Mittelwert wird nie genau $7$ betragen, sollte aber bei längeren Sequenzen in der Nähe von $7$ liegen \cite{rng:BeautifulTesting}. Diese Ungenauigkeiten verdeutlichen, dass jedes Testverfahren für RNGs gelegentlich fehlschlagen wird. Ein Test der immer erfüllt wird, deutet darauf hin dass der Ausgang des RNG zu vorhersehbar ist. \\
 
-
-\subsection{Erzeugen von Verteilungen}
+\subsection{Erzeugen bestimmter Verteilungen}
 Wie unter \ref{subsec:numIntegration} ausgeführt, werden Integrale häufig mit der Monte Carlo Methode gelöst, indem Zufallszahlen mit einer bestimmten Verteilung generiert werden. Es werden also Methoden benötigt, beliebige Verteilungen zu erreichen. Obwohl verschiedene Möglichkeiten bestehen, ist es natürlich nicht möglich, alle Verteilungen mit vernünftigem Aufwand zu erreichen. Die einfachste Methode ist die im folgenden Abschnitt beschriebene Inversionsmethode. 
 
 \subsubsection{Inversionsmethode}
