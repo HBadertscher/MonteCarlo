@@ -76,13 +76,13 @@
 \begin{refsection}
 
 \section{Einleitung}
-Der Monte Carlo Algorithmus ist ein Verfahren zur Lösung numerischer Probleme durch das Ziehen von Zufallszahlen. Die Idee, mathematische bzw. physikalische Probleme mit einem stochastischen Sampling-Verfahren zu approximieren stammt polnisch-amerikanischen Mathematiker Stanisław Marcin Ulam (1909 -- 1984), welcher zu dieser Zeit im Los Alamos National Labaratory arbeitete. Seine Idee, und wie es dazu kam, beschrieb er folgendermassen: \\
+Der Monte Carlo Algorithmus ist ein Verfahren zur Lösung numerischer Probleme durch das Ziehen von Zufallszahlen. Die Idee, mathematische bzw. physikalische Probleme mit einem stochastischen Sampling-Verfahren zu approximieren stammt vom polnisch-amerikanischen Mathematiker Stanisław Marcin Ulam (1909 -- 1984), welcher zu dieser Zeit im Los Alamos National Labaratory arbeitete. Seine Idee, und wie es dazu kam, beschrieb er folgendermassen: \\
 
 \begin{quote}
 \textit{“The first thoughts and attempts I made to practice [the Monte Carlo method] were suggested by a question which occurred to me in 1946 as I was convalescing from an illness and playing solitaires. The question was what are the chances that a Canfield solitaire laid out with 52 cards will come out successfully? After spending a lot of time trying to estimate them by pure combinatorial calculations, I wondered whether a more practical method than “abstract thinking” might not be to lay it out say one hundred times and simply observe and count the number of successful plays. This was already possible to envisage with the beginning of the new era of fast computers, and I immediately thought of problems of neutron diffusion and other questions of mathematical physics, and more generally how to change processes described by certain differential equations into an equivalent form interpretable as a succession of random operations. Later... [in 1946, I ] described the idea to John von Neumann and we began to plan actual calculations.”} - Stan Ulam, 1983
 \end{quote}
 
-Monte Carlo Methoden kommen überall zum Einsatz, wenn deterministische Algorithmen entweder zu komplex sind, oder gar nicht existieren. Dank zunehmender Rechenleistung sind in den letzten Jahren Simulationen wie globale Klimamodelle möglich geworden. Typische Anwendungen des Monte Carlo Algorithmus umfassen u.a.
+Monte Carlo Methoden kommen überall zum Einsatz, wenn deterministische Algorithmen entweder zu komplex sind oder gar nicht existieren. Dank zunehmender Rechenleistung sind in den letzten Jahren Simulationen wie globale Klimamodelle möglich geworden. Typische Anwendungen des Monte Carlo Algorithmus umfassen u.a.
 
 \begin{itemize}
 	\item Numerische Integration
@@ -92,7 +92,7 @@ Monte Carlo Methoden kommen überall zum Einsatz, wenn deterministische Algorith
 \end{itemize}
 
 \section{Funktionsprinzip}
-Die Monte Carlo Methode ist ein Überbegriff für verschiedene Möglichkeiten zur Algorithmen zur numerischen Berechnung / Simulation mittels Zufallsereignissen. Ein weit verbreiteter und sehr flexibler Ansatz ist das sogenannte Hit-or-Miss Verfahren. Dabei werden Zufallszahlen generiert und geprüft ob diese eine bestimmte Bedingung erfüllen oder nicht. Mit dem Verhältnis Hit / Miss wird das gewünschte Ergebnis approximiert. 
+Die Monte Carlo Methode ist ein Überbegriff für verschiedene Algorithmen zur numerischen Berechnung / Simulation mittels Zufallsereignissen. Ein weit verbreiteter und sehr flexibler Ansatz ist das sogenannte Hit-or-Miss Verfahren. Dabei werden Zufallszahlen generiert und geprüft, ob diese eine bestimmte Bedingung erfüllen oder nicht. Mit dem Verhältnis Hit / Miss wird das gewünschte Ergebnis approximiert. 
 
 \subsection{Numerische Integration} \label{subsec:numIntegration}
 Einer der wichtigsten Anwendungsbereiche der Monte Carlo Methode ist die numerische Berechnung von Integralen. Dazu werden innerhalb des Definitionsbereich der zu integrierenden Funktion Zufallsereignisse generiert. Generell kann ausgesagt werden, dass das Integral
@@ -128,7 +128,7 @@ Abbildung \ref{fig:integration_histogram} zeigt eine beliebige Funktion (rot), s
 	\label{fig:integration_histogram}
 \end{figure}
 
-Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Meist ist man dabei nicht nur am numerischen Resultat interessiert, sondern auch an den einzelnen Ereignissen, welche zu diesem Resultat geführt haben. Dazu wird der Algorithmus leicht modifiziert. Die Zufallszahlen $x_i$ werden neu nicht gleichverteilt, sondern mit der Wahrscheinlichkeitsdichtefunktion $f(x)$ bzw. der Verteilungsfunktion $F(x)$ erzeugt. Das Histogramm dieser $x_i$ entspricht der mit $N/F$ normierten Funktion $f(x)$. Das Resultat $F$ kann also durch einen Vergleich des Histogramms mit der Funktion $f(x)$ bestimmt werden. Der Vorteil dieser Methode ist, dass so die Ereignisse $x_i$ mit der richtigen Verteilung bekannt sind und ausgewertet werden könne.
+Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Meist ist man dabei nicht nur am numerischen Resultat, sondern auch an den einzelnen Ereignissen, welche zu diesem Resultat geführt haben, interessiert. Dazu wird der Algorithmus leicht modifiziert. Die Zufallszahlen $x_i$ werden neu nicht gleichverteilt, sondern mit der Wahrscheinlichkeitsdichtfunktion $f(x)$ bzw. der Verteilungsfunktion $F(x)$ erzeugt. Das Histogramm dieser $x_i$ entspricht der mit $N/F$ normierten Funktion $f(x)$. Das Resultat $F$ kann also durch einen Vergleich des Histogramms mit der Funktion $f(x)$ bestimmt werden. Der Vorteil dieser Methode ist, dass so die Ereignisse $x_i$ mit der richtigen Verteilung bekannt sind und ausgewertet werden könne.
 
 \subsection{Abschätzung des Wertes von Pi}
 Als Einführungsbeispiel für die Monte Carlo Methode wird die Zahl $\pi$ mit einer Hit-or-Miss Methode abgeschätzt. Ein Kreis mit Radius $r$ hat eine Grundfläche von $A_{\text{Kreis}} = \pi r^{2}$.  Damit muss in einem Intervall von $[-r,+r]$ integriert werden, was eine Fläche von $A_{\text{Quadrat}} = 4r^2$ ergibt. Damit lässt sich $\pi$ approximieren als
@@ -163,16 +163,7 @@ Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Qu
 \subsection{Implementation in C}
 Die Implementation dieses Beispiels in C ist relativ kurz und übersichtlich: Über $N$ Iterationen wird jeweils ein Paar Zufallszahlen $(x,y)$ generiert und die Gleichung \ref{equ:innerhalbKreis} $x^2 + y^2$ berechnet. Ist das Resultat $<1$ wird eine Summe erhöht. Das Resultat ist schlussendlich die Summe geteilt durch die Anzahl Iterationen $N$ mal 4 Da diese Lösung nicht parallel abläuft, steigt der Rechenaufwand linear mit der Anzahl Iterationen. \\
 
-Folgende Resultate stammen von einem Computer mit einem 2.7 GHz i7 Prozessor. 
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=8cm]{images/Berechnungszeit.eps}
-    \caption{Benötigte Zeit zur Abschätzung von $\pi$}
-    \label{fig:Berechnungszeit}
-\end{figure}
-
-Es ist deutlich ersichtlich, dass bei wenigen Iterationen die Rechenzeit für Initialisierungen überwiegt. Ab etwa 100 Iterationen ist eine direkte Proportionalität zwischen der Rechenzeit und der Anzahl Iterationen erkennbar. Pro Sekunde werden hier etwa $16.7 \cdot 10^6$ Ereignisse berechnet. \\
 \clearpage
 \begin{figure}[h]
     \centering
@@ -189,15 +180,41 @@ Die Genauigkeit wird, wie zu erwarten ist, mit einem Faktor $1/\sqrt{N}$ zunehme
 
 \begin{equation}
 	\text{Relativer Fehler} = \sqrt{\frac{1-\epsilon}{k}}
+	\label{eq:relativer_Fehler}
 \end{equation}
 
-Anhand der beiden Formeln können einige wichtige Erkenntnisse gewonnen werden. So ist es von Vorteil, die Effizienz so nahe an eins wie möglich zu halten. Dies wird erreicht, indem das Zielgebiet $\Omega$ möglichst klein gehalten wird. Für die Plausibilitätsüberprüfung werden die Extremfälle betrachtet. Das kleinstmögliche $\Omega$ ist gerade die Zielfunktion selber. Dabei wird jedes mögliche HM-Ereignis ein Hit. Dies führt dazu, dass $k = N$ und somit $\epsilon$ = 1. Der relative Fehler ist somit bereits nach einer Iteration bei null. Bei einem sehr grossen $\Omega$ wird die Wahrscheinlichkeit, dass ein Hit generiert wird, sehr klein. Somit bleibt $k$ auch nach vielen Operationen klein, wobei $N$ gross wird. $\epsilon$ wird dabei fast null und der relative Fehler belauft sich auf rund $1/\sqrt{k}$.
+Anhand der beiden Formeln können einige wichtige Erkenntnisse gewonnen werden. So ist es von Vorteil, die Effizienz so nahe an eins wie möglich zu halten. Dies wird erreicht, indem das Zielgebiet $\Omega$ möglichst klein gehalten wird. Für die Plausibilitätsüberprüfung werden die Extremfälle betrachtet. Das kleinstmögliche $\Omega$ ist gerade die Zielfunktion selber. Dabei wird jedes mögliche HM-Ereignis ein Hit. Dies führt dazu, dass $k = N$ und somit $\epsilon$ = 1. Der relative Fehler ist somit bereits nach einer Iteration bei null. Bei einem sehr grossen $\Omega$ wird die Wahrscheinlichkeit, dass ein Hit generiert wird, sehr klein. Somit bleibt $k$ auch nach vielen Operationen klein, wobei $N$ gross wird. $\epsilon$ wird dabei fast null und der relative Fehler belauft sich auf rund $1/\sqrt{k}$.\\
+
+\subsection{Genauigkeit des Schätzers}
+
+Um die Genauigkeit der Fehlerabweichung besser abschätzen zu können, wird die Simulation 1000 mal durchgeführt und die gemittelte effektive Abweichung mit der Schätzung verglichen.\\
+
+\clearpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=8cm]{images/Fehler_gemittelt.eps}
+    \caption{Betrag der Abweichung, gemittelt}
+    \label{fig:Fehler_gemittelt}
+\end{figure}
+
+Dabei zeigt sich, dass die Schätzung ca. um den Faktor 2 höher liegt als die Abweichungen der Simulationsergebnisse. Zumindest die Grössenordnung des Schätzers stimmt somit. Um zu illustrieren, wie der Faktor zustande kommen könnte, wird ein Histogramm der Fehlerabweichung gemacht. Dazu werden eine Million Simulationen mit N=1000 durchgeführt und in die Beträge der Abweichung in ein Histogramm eingetragen. In Abbildung \ref{fig:Histogramm} ist ersichtlich, dass die Streuung ziemlich hoch ist. Es tauchen Werte auf, welche das zehnfache des Schätzers betragen. Somit ist der Schätzer sowieso nur als Grössenordnung zu verstehen, da ein Einzelnes Simulationsergebnis wesentlich ungenauer sein kann.
+
+Der Mittelwert der Abweichungen liegt bei 0.0414, der Schätzer prognostiziert 0.0661. Dies entspricht einem Faktor von rund 0.63. Die Formel \ref{eq:relativer_Fehler}, welche den relativen Fehler Schätzt, könnte in diesem Beispiel mit der Konstante 0.6 ergänzt werden, womit die Schätzung sehr genau stimmen würde. Ob dieser Faktor nur in diesem Beispiel oder generell gilt, wird nicht weiter untersucht.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=8cm]{images/Histogramm.eps}
+    \caption{Beträge des Effektiven Fehlers bei N = 1000, Fehlerschätzung = 0.0165}
+    \label{fig:Histogramm}
+\end{figure}
+
+
 
 \subsection{Implementation in OpenCL}
-Bei der Monte Carlo Analyse werden sehr viele komplett unabhängige Berechnungen durchgeführt. Dadurch ist OpenCL perfekt geeignet um das Problem zu parallelisieren. Die grösste Schwierigkeit dabei ist die Generierung von Zufallszahlen auf der GPU. 
+Bei der Monte Carlo Analyse werden sehr viele komplett unabhängige Berechnungen durchgeführt. Dadurch ist OpenCL perfekt geeignet, um das Problem zu parallelisieren. Die grösste Schwierigkeit dabei ist die Generierung von Zufallszahlen auf der GPU. 
 
 \subsubsection{Ansatz I: Zufallszahlen auf CPU}
-Die einfachste Lösung für das Problem ist es, auf der CPU qualitativ hochwertige Zufallszahlen zu generieren und in einem Array an OpenCL zu übergeben. Jeder Worker liest seine zwei Zufallszahlen aus und rechnet das Resultat für diesen Punkt aus. So ist sichergestellt, dass die Zufallszahlen wirklich zufällig sind, und somit das Resultat gegen den korrekten Wert konvergiert. Die Nachteile sind, dass die Berechnung der Zufallszahlen seriell, und somit langsam, ist, sowie der hohe Speicherverbrauch. Dieser kann um einen Faktor 2 reduziert werden, indem nur eine Zufallszahl übergeben wird und jeder Worker sich eine zweite Zahl berechnet. \\
+Die einfachste Lösung für das Problem ist es, auf der CPU qualitativ hochwertige Zufallszahlen zu generieren und in einem Array an OpenCL zu übergeben. Jeder Worker liest seine zwei Zufallszahlen aus und rechnet das Resultat für diesen Punkt aus. So ist sichergestellt, dass die Zufallszahlen wirklich zufällig sind und das Resultat gegen den korrekten Wert konvergiert. Die Nachteile sind, dass die Berechnung der Zufallszahlen seriell und somit langsam ist, sowie der hohe Speicherverbrauch. Dieser kann um einen Faktor 2 reduziert werden, indem nur eine Zufallszahl übergeben wird und jeder Worker sich eine zweite Zahl berechnet. \\
 
 Wird diese Variante mit C bzw. OpenCL umgesetzt, stellen sich die erwarteten Resultate ein: Die Rechenzeit steigt linear mit der Anzahl Punkte, die Berechnung ist jedoch deutlich schneller als bei serieller Berechnung auf der CPU. Mit 48.909 Mio Berechnungen pro Sekunde ist die parallelisierte Version um Faktor 5 schneller  als die serielle Implementation.
 
@@ -230,7 +247,7 @@ Die beste Lösung liegt in einer Mischform der beiden Ansätze: Auf der CPU wird
 	\item Zusammenführen und Auswerten der Resultate der einzelnen Worker auf der CPU.
 \end{enumerate}
 
-Mit diesem Verfahren lässt sich die vorhandene Hardware gut ausnutzen, ohne an Genauigkeit durch schlechte Zufallszahlen zu verlieren. 
+Mit diesem Verfahren lässt sich die vorhandene Hardware gut ausnutzen, ohne Genauigkeit durch schlechte Zufallszahlen zu verlieren. 
 
 \clearpage
 \section{Zufallszahlengeneratoren} 
