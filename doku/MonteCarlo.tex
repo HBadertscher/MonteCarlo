@@ -64,7 +64,7 @@
 
 
 \begin{document}
-\title{Monte Carlo Methode}
+\title{Die Monte Carlo Methode}
 \author{Dorian Amiet, Hannes Badertscher}
 \date{}
 \maketitle
@@ -82,7 +82,7 @@ Der Monte Carlo Algorithmus ist ein Verfahren zur Lösung numerischer Probleme d
 \textit{“The first thoughts and attempts I made to practice [the Monte Carlo method] were suggested by a question which occurred to me in 1946 as I was convalescing from an illness and playing solitaires. The question was what are the chances that a Canfield solitaire laid out with 52 cards will come out successfully? After spending a lot of time trying to estimate them by pure combinatorial calculations, I wondered whether a more practical method than “abstract thinking” might not be to lay it out say one hundred times and simply observe and count the number of successful plays. This was already possible to envisage with the beginning of the new era of fast computers, and I immediately thought of problems of neutron diffusion and other questions of mathematical physics, and more generally how to change processes described by certain differential equations into an equivalent form interpretable as a succession of random operations. Later... [in 1946, I ] described the idea to John von Neumann and we began to plan actual calculations.”} - Stan Ulam, 1983
 \end{quote}
 
-Monte Carlo Methoden kommen überall zum Einsatz, wenn deterministische Algorithmen entweder zu komplex sind oder gar nicht existieren. Dank zunehmender Rechenleistung sind in den letzten Jahren Simulationen wie globale Klimamodelle möglich geworden. Typische Anwendungen des Monte Carlo Algorithmus umfassen u.a.
+Monte Carlo Methoden kommen überall zum Einsatz, wo deterministische Algorithmen entweder zu komplex sind oder gar nicht existieren. Dank zunehmender Rechenleistung sind in den letzten Jahren Simulationen wie globale Klimamodelle möglich geworden. Typische Anwendungen des Monte Carlo Algorithmus umfassen u.a.
 
 \begin{itemize}
 	\item Numerische Integration
@@ -140,7 +140,7 @@ Als Einführungsbeispiel für die Monte Carlo Methode wird die Zahl $\pi$ mit ei
 Das Verhältnis der Fläche des Kreises zur Fläche des Quadrats entspricht der Wahrscheinlichkeit, dass ein Paar Zufallszahlen $(x_i,y_i)$ mit $x_i,y_i \leq r$ innerhalb des Kreises mit Radius $r$ liegen. Dies wird mit folgender Formel überprüft:
 
 \begin{equation}
-	x^2 + y^2 \leq r
+	x^2 + y^2 \leq r^2
 	\label{equ:innerhalbKreis}
 \end{equation}
 
@@ -161,10 +161,9 @@ Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Qu
 
 \section{Implementation}
 \subsection{Implementation in C}
-Die Implementation dieses Beispiels in C ist relativ kurz und übersichtlich: Über $N$ Iterationen wird jeweils ein Paar Zufallszahlen $(x,y)$ generiert und die Gleichung \ref{equ:innerhalbKreis} $x^2 + y^2$ berechnet. Ist das Resultat $<1$ wird eine Summe erhöht. Das Resultat ist schlussendlich die Summe geteilt durch die Anzahl Iterationen $N$ mal 4 Da diese Lösung nicht parallel abläuft, steigt der Rechenaufwand linear mit der Anzahl Iterationen. \\
+Die Implementation dieses Beispiels in C ist relativ kurz und übersichtlich: Über $N$ Iterationen wird jeweils ein Paar Zufallszahlen $(x,y)$ generiert und die Gleichung \ref{equ:innerhalbKreis} $x^2 + y^2$ berechnet. Ist das Resultat $\leq1$ wird eine Summe erhöht. Das Resultat ist schlussendlich die Summe geteilt durch die Anzahl Iterationen $N$ mal 4 Da diese Lösung nicht parallel abläuft, steigt der Rechenaufwand linear mit der Anzahl Iterationen. \\
 
 
-\clearpage
 \begin{figure}[h]
     \centering
     \includegraphics[width=8cm]{images/Fehler.eps}
@@ -189,7 +188,6 @@ Anhand der beiden Formeln können einige wichtige Erkenntnisse gewonnen werden. 
 
 Um die Genauigkeit der Fehlerabweichung besser abschätzen zu können, wird die Simulation 1000 mal durchgeführt und die gemittelte effektive Abweichung mit der Schätzung verglichen.\\
 
-\clearpage
 \begin{figure}[h]
     \centering
     \includegraphics[width=8cm]{images/Fehler_gemittelt.eps}
@@ -197,9 +195,9 @@ Um die Genauigkeit der Fehlerabweichung besser abschätzen zu können, wird die 
     \label{fig:Fehler_gemittelt}
 \end{figure}
 
-Dabei zeigt sich, dass die Schätzung ca. um den Faktor 2 höher liegt als die Abweichungen der Simulationsergebnisse. Zumindest die Grössenordnung des Schätzers stimmt somit. Um zu illustrieren, wie der Faktor zustande kommen könnte, wird ein Histogramm der Fehlerabweichung gemacht. Dazu werden eine Million Simulationen mit N=1000 durchgeführt und in die Beträge der Abweichung in ein Histogramm eingetragen. In Abbildung \ref{fig:Histogramm} ist ersichtlich, dass die Streuung ziemlich hoch ist. Es tauchen Werte auf, welche das zehnfache des Schätzers betragen. Somit ist der Schätzer sowieso nur als Grössenordnung zu verstehen, da ein Einzelnes Simulationsergebnis wesentlich ungenauer sein kann.
+Dabei zeigt sich, dass die Schätzung ca. um den Faktor 2 höher liegt als die Abweichungen der Simulationsergebnisse. Zumindest die Grössenordnung des Schätzers stimmt somit. Um zu illustrieren, wie der Faktor zustande kommen könnte, wird ein Histogramm der Fehlerabweichung gemacht. Dazu werden eine Million Simulationen mit N=1000 durchgeführt und in die Beträge der Abweichung in ein Histogramm eingetragen. In Abbildung \ref{fig:Histogramm} ist ersichtlich, dass die Streuung ziemlich hoch ist. Es tauchen Werte auf, welche das zehnfache des Schätzers betragen. Somit ist der Schätzer sowieso nur als Grössenordnung zu verstehen, da ein einzelnes Simulationsergebnis wesentlich ungenauer sein kann.
 
-Der Mittelwert der Abweichungen liegt bei 0.0414, der Schätzer prognostiziert 0.0661. Dies entspricht einem Faktor von rund 0.63. Die Formel \ref{eq:relativer_Fehler}, welche den relativen Fehler Schätzt, könnte in diesem Beispiel mit der Konstante 0.6 ergänzt werden, womit die Schätzung sehr genau stimmen würde. Ob dieser Faktor nur in diesem Beispiel oder generell gilt, wird nicht weiter untersucht.
+Der Mittelwert der Abweichungen liegt bei 0.0414, der Schätzer prognostiziert 0.0661. Dies entspricht einem Faktor von rund 0.63. Die Formel \ref{eq:relativer_Fehler}, welche den relativen Fehler schätzt, könnte in diesem Beispiel mit der Konstante 0.6 ergänzt werden, womit die Schätzung sehr genau stimmen würde. Ob dieser Faktor nur in diesem Beispiel oder generell gilt, wird nicht weiter untersucht.
 
 \begin{figure}[h]
     \centering
@@ -262,7 +260,7 @@ In Software ist es deutlich schwieriger, ``gute'' Random Number Generators (RNGs
 
 \subsection{Random-Device} \label{subsec:RandomDev}
 
-Auf Unix-Systemen steht mit dem sog. Random-Device (/dev/random) ein Zufallszahlengenerator sehr hoher Güte zur Verfügung. Dieser sammelt das Rauschen von Gerätetreibern in einem Entropie-Pool und generiert daraus Zufallszahlen, welche auch höchsten Anforderungen im Bereich der Kryptografie genügen. Der Nachteil ist, dass sobald dieser Entropie-Pool erschöpft ist keine Zufallszahlen mehr generiert werden können. Mit dem Device /dev/urandom wurde Abhilfe geschaffen, was jedoch mit dem Nachteil erkauft wird, dass beim Unterschreiten einer gewissen Entropie-Schwelle nur Pseudozufallszahlen generiert werden, welche unter Umständen von einem potentiellen Angreifer berechnet werden könnten. Den meisten Anforderungen genügt dies jedoch trotzdem. \\
+Auf Unix-Systemen steht mit dem sog. Random-Device (\texttt{/dev/random}) ein Zufallszahlengenerator sehr hoher Güte zur Verfügung. Dieser sammelt das Rauschen von Gerätetreibern in einem Entropie-Pool und generiert daraus Zufallszahlen, welche auch höchsten Anforderungen im Bereich der Kryptografie genügen. Der Nachteil ist, dass sobald dieser Entropie-Pool erschöpft ist keine Zufallszahlen mehr generiert werden können. Mit dem Device \texttt{/dev/urandom} wurde Abhilfe geschaffen, was jedoch mit dem Nachteil erkauft wird, dass beim Unterschreiten einer gewissen Entropie-Schwelle nur Pseudozufallszahlen generiert werden, welche unter Umständen von einem potentiellen Angreifer berechnet werden könnten. Den meisten Anforderungen genügt dies jedoch trotzdem. \\
 
 Das Random-Device kann von einem Programm wie ein File eingebunden werden und Zufallszahlen daraus gelesen werden. Für viele Anwendungen ist dies klar zu langsam, weshalb häufig das Random-Device nur als Seed für einen Pseudo-Random-Number-Generator verwendet wird.
 
@@ -320,7 +318,7 @@ und somit gilt:
 	x_{i+2} = 6 x_{i+1} - 9 x_i
 \end{equation}
 
-für alle $k$. Diese hohe Korrelation ist in Abbildung \ref{fig:IBMRandu} dargestellt. Donald E. Knuth bezeichnet den Generator deshalb als \textit{``really horrible''} \cite[p.173]{rng:KnuthVol2}. \\
+für alle $k$. Diese hohe Korrelation ist in Abbildung \ref{fig:IBMRandu} dargestellt. Donald E. Knuth bezeichnete den Generator deshalb als \textit{``really horrible''} \cite[p.173]{rng:KnuthVol2}. \\
 
 \begin{figure}[htbp]
 	\centering
@@ -330,8 +328,9 @@ für alle $k$. Diese hohe Korrelation ist in Abbildung \ref{fig:IBMRandu} darges
 \end{figure}
 
 \subsubsection{Die rand() Funktion von C}
-Durch die einfache und sehr effiziente Berechnung finden LCG Generatoren viel Verbreitung in der Praxis. So verwendet die C-Funktion \texttt{rand()} nach dem LCG-Algorithmus mit den Konstanten $a=1103515245$, $c=12345$, $m=2^{31}$, und dem mit der Funktion \texttt{srand()} gesetzten Startwert. \cite{rng:randFunction} Eine gängige Praxis ist es, den Startwert mit der aktuellen Systemzeit zu initialisieren. Ein entsprechendes Code-Snippet liegt im Github-Repository bei. \cite{rng:githubRepo} \\
+Durch die einfache und sehr effiziente Berechnung finden LCG Generatoren viel Verbreitung in der Praxis. So verwendet die C-Funktion \texttt{rand()} üblicherweise den LCG-Algorithmus mit den Konstanten $a=1103515245$, $c=12345$, $m=2^{31}$, und dem mit der Funktion \texttt{srand()} gesetzten Startwert. \cite{rng:randFunction} Eine gängige Praxis ist es, den Startwert mit der aktuellen Systemzeit zu initialisieren. Ein entsprechendes Code-Snippet liegt im Github-Repository bei. \cite{rng:githubRepo} \\
 
+Die \texttt{rand()} Funktion ist nicht genau spezifiziert ist und die Periodendauer durch die Wahl von $m=2^{31}$ als Potenz von zwei eher klein ist. Deshalb wird die Verwendung dieser Funktion nicht empfohlen.
 
 \subsection{Lehmer Generator} \label{subsec:Lehmer}
 Der Lehmer-Generator ist eine Unterart der LCG Generatoren, nach folgender Rekursionsvorschrift:
@@ -343,7 +342,7 @@ Der Lehmer-Generator ist eine Unterart der LCG Generatoren, nach folgender Rekur
 
 wobei $m$ eine Primzahl sein muss. Sie zeichnen sich gegenüber Standard LCG Generatoren durch eine höhere Periodendauer aus. David W. Hutchinson in seinem Paper \textit{``A new uniform pseudorandom number generator''} 1966 \cite{rng:Hutchinson1966} vor, das Modul  $m = 2^{31} - 1 = 2'147'483'647$ zu wählen. Damit ist der Generator in 32-bit Systemen relativ effizient umsetzbar. Eine optimale Wahl des Parameters $a$ blieb er jedoch schuldig. \\
 
-Erst Jahre später, im Oktober 1988, publizierten Stephen K. Park und Keith W. Miller im Journal \textit{Communications of the ACM}\footnote{ACM: Association for Computing Machinery: Renommierte wissenschaftliche Gesellschaft zur Förderung der Informatik} einen Artikel \cite{rng:ParkMiller1988}, in welchem Sie genauer auf eine gute Wahl von $a$ eingingen. Sie zeigten sich in ihrem Paper \textit{`` Random number generators: good ones are hard to find.''} sehr besorgt über die gängige Praxis von Zufallsgeneratoren - insbesondere auch in Fach- und Lehrbüchern:
+Erst Jahre später, im Oktober 1988, publizierten Stephen K. Park und Keith W. Miller im Journal \textit{Communications of the ACM}\footnote{Association for Computing Machinery: Renommierte wissenschaftliche Gesellschaft zur Förderung der Informatik} einen Artikel \cite{rng:ParkMiller1988}, in welchem Sie genauer auf eine gute Wahl von $a$ eingingen. Sie zeigten sich in ihrem Paper \textit{`` Random number generators: good ones are hard to find.''} sehr besorgt über die gängige Praxis von Zufallsgeneratoren - insbesondere auch in Fach- und Lehrbüchern:
 
 \begin{quote}
 	\textit{Many generators have been written, most of them have demonstrably non-random characteristics, and some are embarrassingly bad.}
@@ -435,7 +434,7 @@ Um sicherzustellen, dass alle 32-bit gleichverteilt sind, werden die Zufallszahl
 	Z_i &:= z \oplus \left\lfloor \frac{z}{2^{18}} \right\rfloor
 \end{align}
 
-Obwohl der Mersenne-Twister Algorithmus sehr kompliziert scheint, ist die Ausführung relativ schnell. Zusammen mit den bereits beschriebenen Vorteilen hat dies dazu geführt, dass der Mersenne-Twister der Standard-Zufallszahlengenerator in vielen Bibliotheken, wie z.B. der \textit{GNU Scientific Library} ist.
+Obwohl der Mersenne-Twister Algorithmus sehr kompliziert scheint, ist die Ausführung sehr schnell, weil fast nur Additionen und Bit-weise Manipulationen ausgeführt werden. Zusammen mit den bereits beschriebenen Vorteilen hat dies dazu geführt, dass der Mersenne-Twister der Standard-Zufallszahlengenerator in vielen Bibliotheken, wie z.B. der \textit{GNU Scientific Library} ist.
 
 
 \subsection{Erzeugen bestimmter Verteilungen}
