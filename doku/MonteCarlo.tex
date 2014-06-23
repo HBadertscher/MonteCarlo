@@ -1,3 +1,5 @@
+
+
 \documentclass{book}
 \usepackage{geometry}
 \usepackage[utf8]{inputenc} % UTF-8 unterstützung
@@ -116,7 +118,7 @@ Der Algorithmus lässt sich sehr einfach beschreiben:
 	\item Erzeuge $N$ im Intervall $[a,b]$ gleichverteilte Zufallszahlen $x_i$.
 	\item Erzeuge für jedes $x_i$ ein in $[0,f_{max}]$ gleichverteiltes $y_i$.
 	\item Falls $y_i < f(x_i)$ wird das $x_i$ akzeptiert, sonst verworfen.
-	\item Wenn $N^*$ die Anzahl der akzeptierten $x_i$ ist, dann ist $F = \frac{N^*}{N}(b-a)f_max$.
+	\item Wenn $N^*$ die Anzahl der akzeptierten $x_i$ ist, dann ist $F = \frac{N^*}{N}(b-a)f_{max}$.
 \end{enumerate}
 
 Abbildung \ref{fig:integration_histogram} zeigt eine beliebige Funktion (rot), sowie die akzeptierten Ereignisse (blau) und die nicht akzeptierten Ereignisse (grün). \\
@@ -128,8 +130,6 @@ Abbildung \ref{fig:integration_histogram} zeigt eine beliebige Funktion (rot), s
 	\label{fig:integration_histogram}
 \end{figure}
 
-Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Meist ist man dabei nicht nur am numerischen Resultat, sondern auch an den einzelnen Ereignissen, welche zu diesem Resultat geführt haben, interessiert. Dazu wird der Algorithmus leicht modifiziert. Die Zufallszahlen $x_i$ werden neu nicht gleichverteilt, sondern mit der Wahrscheinlichkeitsdichtfunktion $f(x)$ bzw. der Verteilungsfunktion $F(x)$ erzeugt. Das Histogramm dieser $x_i$ entspricht der mit $N/F$ normierten Funktion $f(x)$. Das Resultat $F$ kann also durch einen Vergleich des Histogramms mit der Funktion $f(x)$ bestimmt werden. Der Vorteil dieser Methode ist, dass so die Ereignisse $x_i$ mit der richtigen Verteilung bekannt sind und ausgewertet werden könne.
-
 \subsection{Abschätzung des Wertes von Pi}
 Als Einführungsbeispiel für die Monte Carlo Methode wird die Zahl $\pi$ mit einer Hit-or-Miss Methode abgeschätzt. Ein Kreis mit Radius $r$ hat eine Grundfläche von $A_{\text{Kreis}} = \pi r^{2}$.  Damit muss in einem Intervall von $[-r,+r]$ integriert werden, was eine Fläche von $A_{\text{Quadrat}} = 4r^2$ ergibt. Damit lässt sich $\pi$ approximieren als
 
@@ -137,7 +137,8 @@ Als Einführungsbeispiel für die Monte Carlo Methode wird die Zahl $\pi$ mit ei
 	\hat{\pi} = \frac{A_{\text{Kreis}}}{r^2} = 4 \frac{A_{\text{Kreis}}}{A_{\text{Quadrat}}}
 \end{equation}
 
-Das Verhältnis der Fläche des Kreises zur Fläche des Quadrats entspricht der Wahrscheinlichkeit, dass ein Paar Zufallszahlen $(x_i,y_i)$ mit $x_i,y_i \leq r$ innerhalb des Kreises mit Radius $r$ liegen. Dies wird mit folgender Formel überprüft:
+Das Verhältnis der Fläche des Kreises zur Fläche des Quadrats
+entspricht der Wahrscheinlichkeit, dass ein Paar von Zufallszahlen $(x_i,y_i)$ mit $x_i,y_i \leq r$ innerhalb des Kreises mit Radius $r$ liegen. Dies wird mit folgender Formel überprüft:
 
 \begin{equation}
 	x^2 + y^2 \leq r^2
@@ -151,18 +152,43 @@ Das Verhältnis der Fläche des Kreises zur Fläche des Quadrats entspricht der 
 	\label{fig:KreisHitMiss}
 \end{figure}
 
-Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Quadranten reduziert werden. Für $N$ Iterationen, von welchen $k$ die Bedingung \ref{equ:innerhalbKreis} ergibt sich somit folgende Abschätzung für Pi:
+Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Quadranten reduziert werden. Für $N$ Iterationen, von welchen $k$ die Bedingung \ref{equ:innerhalbKreis} ergibt sich somit folgende Abschätzung für $\pi$:
 
 \begin{equation}
 	\hat{\pi} = 4 \cdot \frac{k}{N}
 \end{equation}
 
 
+\subsubsection{Weitere Anwendungen}
+Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Dort stellt sich das Problem, dass verschiedene Prozesse zwischen einzelnen Teilchen auftreten können. Diese Prozesse oder Ereignisse werden als Inputs $I_i$ bezeichnet. Ein Detektor misst nun gewisse Outputs $O_j$. Dabei interagieren die Inputs $I_i$ jedoch auch mit dem Detektor. Da in der Quantenmechanik nicht alles deterministisch abläuft, müssen probabilistische Aussagen gemacht werden, d.h. $P(O_j | I_i)$ geschätzt werden. Auch wenn verschiedene Zwischenschritte das Resultat $O_j$ beeinflussen, kann aufgrund der Wahrscheinlichkeit $P(O_j | I_i)$ und der Wahrscheinlichkeit des Outputs $P(O_j)$ eine Aussage über den Input $I_i$ gemacht werden. Solche Methoden werden u.a. verwendet um das Higgs Boson nachzuweisen. 
+
+In der Versicherungsbranche ist die Monte Carlo Methode ebenso verbreitet. Dabei stellt sich ein ähnliches Problem: Ein Schadensszenario ($I_i$), z.B. ein Hochwasser, führt nicht nur zu direkten Schäden, sondern über komplizierte Zusammenhänge zu Folgeschäden. Ein direkter Zusammenhang zwischen einem Input $I_i$ und einem finanziellen Schaden $O_j$ ist schwierig zu berechnen. Mit einer Monte Carlo Simulation kann die Wahrscheinlichkeit eines Schadens $P(O_j | I_i)$ simuliert werden und daraus eine Versicherungsprämie berechnet werden.
+
+
+
+%Meist ist man dabei nicht nur am numerischen Resultat, sondern auch an den einzelnen Ereignissen, welche zu diesem Resultat geführt haben, interessiert. Dazu wird der Algorithmus leicht modifiziert. Die Zufallszahlen $x_i$ werden neu nicht gleichverteilt, sondern mit der Wahrscheinlichkeitsdichtfunktion $f(x)$ bzw. der Verteilungsfunktion $F(x)$ erzeugt. Das Histogramm dieser $x_i$ entspricht der mit $N/F$ normierten Funktion $f(x)$. Das Resultat $F$ kann also durch einen Vergleich des Histogramms mit der Funktion $f(x)$ bestimmt werden. Der Vorteil dieser Methode ist, dass so die Ereignisse $x_i$ mit der richtigen Verteilung bekannt sind und ausgewertet werden könne.
+
 
 \section{Implementation}
 \subsection{Implementation in C}
-Die Implementation dieses Beispiels in C ist relativ kurz und übersichtlich: Über $N$ Iterationen wird jeweils ein Paar Zufallszahlen $(x,y)$ generiert und die Gleichung \ref{equ:innerhalbKreis} $x^2 + y^2$ berechnet. Ist das Resultat $\leq1$ wird eine Summe erhöht. Das Resultat ist schlussendlich die Summe geteilt durch die Anzahl Iterationen $N$ mal 4 Da diese Lösung nicht parallel abläuft, steigt der Rechenaufwand linear mit der Anzahl Iterationen. \\
+Die Implementation dieses Beispiels in C ist relativ kurz und
+übersichtlich: Über $N$ Iterationen wird jeweils ein Paar
+Zufallszahlen $(x,y)$ generiert und die Gleichung
+\ref{equ:innerhalbKreis}: $x^2 + y^2$ berechnet. Ist das Resultat $\leq1$ wird eine Summe erhöht. Das Resultat ist schlussendlich die Summe geteilt durch die Anzahl Iterationen $N$ mal 4. Da diese Lösung nicht parallel abläuft, steigt der Rechenaufwand linear mit der Anzahl Iterationen. \\
 
+Die Effizienz $\epsilon$ des Hit-or-Miss Algorithmus lässt sich mit der Anzahl Hits $k$ und der Iterationen $N$ gemäss Gleichung \ref{equ:effizienz_hitnmiss} beschreiben.
+\begin{equation}
+	\epsilon = \frac{k}{N}
+	\label{equ:effizienz_hitnmiss}
+\end{equation} 
+Eine Effizienz von $\epsilon=1$ würde bedeuten, dass das Definitionsgebiet der Zufallszahlen $\Omega$ genau der Zielfunktion entspricht. Wird $\Omega$ sehr gross gewählt, ist die Wahrscheinlichkeit eines Hits sehr gering und es sind viele Iterationen notwendig um das korrekte Resultat zu erreichen. Der relative Fehler der Schätzung wird gemäss Gleichung \ref{equ:relativer_Fehler} berechnet.
+
+\begin{equation}
+	\text{Relativer Fehler} = \sqrt{\frac{1-\epsilon}{k}} 
+	\label{equ:relativer_Fehler}
+\end{equation}
+
+Für hohe $N$ wird der Fehler mit einem Faktoren $1 / \sqrt{N}$ gegen $0$ konvergieren. Dies ist in Abbildung \ref{fig:Fehler} klar ersichtlich.
 
 \begin{figure}[h]
     \centering
@@ -171,18 +197,6 @@ Die Implementation dieses Beispiels in C ist relativ kurz und übersichtlich: Ü
     \label{fig:Fehler}
 \end{figure}
 
-Die Genauigkeit wird, wie zu erwarten ist, mit einem Faktor $1/\sqrt{N}$ zunehmen. Der relative Fehler kann mittels Effizienz $\epsilon$ und Anzahl angenommene Ereignisse $k$ abgeschätzt werden.
-
-\begin{equation}
-	\epsilon = \frac{k}{N}
-\end{equation} 
-
-\begin{equation}
-	\text{Relativer Fehler} = \sqrt{\frac{1-\epsilon}{k}}
-	\label{eq:relativer_Fehler}
-\end{equation}
-
-Anhand der beiden Formeln können einige wichtige Erkenntnisse gewonnen werden. So ist es von Vorteil, die Effizienz so nahe an eins wie möglich zu halten. Dies wird erreicht, indem das Zielgebiet $\Omega$ möglichst klein gehalten wird. Für die Plausibilitätsüberprüfung werden die Extremfälle betrachtet. Das kleinstmögliche $\Omega$ ist gerade die Zielfunktion selber. Dabei wird jedes mögliche HM-Ereignis ein Hit. Dies führt dazu, dass $k = N$ und somit $\epsilon$ = 1. Der relative Fehler ist somit bereits nach einer Iteration bei null. Bei einem sehr grossen $\Omega$ wird die Wahrscheinlichkeit, dass ein Hit generiert wird, sehr klein. Somit bleibt $k$ auch nach vielen Operationen klein, wobei $N$ gross wird. $\epsilon$ wird dabei fast null und der relative Fehler belauft sich auf rund $1/\sqrt{k}$.\\
 
 \subsection{Genauigkeit des Schätzers}
 
@@ -258,6 +272,21 @@ Die Generierung von Zufallszahlen ist absolut essentiell für die Monte Carlo Me
 
 In Software ist es deutlich schwieriger, ``gute'' Random Number Generators (RNGs) zu realisieren. Technisch gesehen sind Software RNGs immer \textit{Pseudo} Random Number Generators (pRNGs),  denn der Ausgangswert eines deterministischen Programms kann per Definition nicht zufällig sein. Die Schwierigkeit ist es, Zahlen zu generieren, die aus der Perspektive des Anwenders komplett zufällig sind, obwohl sie eindeutig mathematisch definiert sind.
 
+\subsection{Beurteilung von Zufallszahlen}
+
+Die Qualität von Zufallszahlen kann nicht generell gemessen werden: Für kryptographische Anwendungen sind ganz andere Qualitätsmerkmale nötig als bei einer Monte Carlo Simulation. Es ist logisch, dass ein Zufallszahlengenerator eine bestimmte Verteilungsfunktion, in der Regel eine Gleichverteilung, erfüllen muss. Für die Monte Carlo Methode sind folgende Punkte wichtig:
+
+Die Periodendauer, d.h. die Anzahl Zahlen bis sich eine Sequenz wiederholt soll möglichst gross sein. Wenn $N$ Iterationen durchgeführt werden, müssen mindestens $N$ unabhängige Zufallsvektoren generiert werden können.
+
+Gewisse Zufallszahlengeneratoren sind in einer Dimension zwar qualitativ gut, in mehreren jedoch nicht. Wenn also zwei aufeinanderfolgende Zufallszahlen als x,y-Koordinaten eines Punktes interpretiert werden, sind diese Punkte nicht mehr gleichverteilt. Für die Monte Carlo Methode ist es wichtig, dass die Eingangspunkte unabhängig und gleichverteilt sind. Eine graphische Darstellung eines ''guten`` Zufallszahlengenerators in 2D ist in Abbildung \ref{fig:Zufallszahlen_gut} dargestellt.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=8cm]{images/Zufallszahlen_gut.eps}
+	\caption{Beispiel für eine gute Verteilung aufeinanderfolgender Punkte}
+	\label{fig:Zufallszahlen_gut}
+\end{figure}
+
 \subsection{Random-Device} \label{subsec:RandomDev}
 
 Auf Unix-Systemen steht mit dem sog. Random-Device (\texttt{/dev/random}) ein Zufallszahlengenerator sehr hoher Güte zur Verfügung. Dieser sammelt das Rauschen von Gerätetreibern in einem Entropie-Pool und generiert daraus Zufallszahlen, welche auch höchsten Anforderungen im Bereich der Kryptografie genügen. Der Nachteil ist, dass sobald dieser Entropie-Pool erschöpft ist keine Zufallszahlen mehr generiert werden können. Mit dem Device \texttt{/dev/urandom} wurde Abhilfe geschaffen, was jedoch mit dem Nachteil erkauft wird, dass beim Unterschreiten einer gewissen Entropie-Schwelle nur Pseudozufallszahlen generiert werden, welche unter Umständen von einem potentiellen Angreifer berechnet werden könnten. Den meisten Anforderungen genügt dies jedoch trotzdem. \\
@@ -281,7 +310,6 @@ Der Generator ist durch den Startwert $x_1$, den Faktor $a$, das Inkrement $b$ u
 	y_i &= \frac{x_i}{m} \: &\text{for approx. uniformly distributed numbers  in } [0,1)\\
 	y_i &= \frac{x_i}{m-1} \: &\text{for approx. uniformly distributed numbers in [0,1]}
 \end{align} 
-
 
 LCG Generatoren sind sehr stark von der Wahl der Konstanten $a$,$b$,$m$ abhängig. Eine suboptimale Wahl kann zu einer sehr geringen Periode und einer eindeutigen Korrelation aufeinanderfolgender Zahlen führen. Abbildung \ref{fig:lcg_verteilung} verdeutlicht dies anhand eines LCG mit $a=11$, $b=0$ und $m=64$. \\
 
@@ -308,17 +336,10 @@ Aus der Zuordnungsvorschrift
 \end{equation*}
 folgt für zwei Iterationen:
 \begin{align*}
-	x_{i+2} &= (2^{16} + 3) x_{i+1} \\
-	 &= (2^{16} + 3)^2 x_i \\
-	 &= [6 (2^{16} + 3) - 9] x_i
+	x_{i+2} &= (2^{16} + 3) x_{i+1} = (2^{16} + 3)^2 x_i = [6 (2^{16} + 3) - 9] x_i = x_{i+2} = 6 x_{i+1} - 9 x_i
 \end{align*}
 
-und somit gilt:
-\begin{equation}
-	x_{i+2} = 6 x_{i+1} - 9 x_i
-\end{equation}
-
-für alle $k$. Diese hohe Korrelation ist in Abbildung \ref{fig:IBMRandu} dargestellt. Donald E. Knuth bezeichnete den Generator deshalb als \textit{``really horrible''} \cite[p.173]{rng:KnuthVol2}. \\
+Somit besteht zwischen 3 Punkten $(x_i, x_{i+1},x_{i+2})$ ein linearer Zusammenhang, weshalb diese auf einer Ebene liegen müssen. Diese ist in Abbildung \ref{fig:IBMRandu} dargestellt. Donald E. Knuth bezeichnete den Generator deshalb als \textit{``really horrible''} \cite[p.173]{rng:KnuthVol2}. \\
 
 \begin{figure}[htbp]
 	\centering
@@ -419,7 +440,8 @@ Der Mersenne-Twister Algorithmus zeichnet sich durch eine extrem hohe Periode vo
 
 Der Mersenne-Twister Algorithmus arbeitet mit 624 Zustandswörtern $Y_1 \dots Y_N$ von typischerweise 32-bit Länge. Diese Zustände werden zu Beginn des Algorithmus initialisiert. Dies wird häufig mit dem in Abschnitt \ref{subsec:RandomDev} beschriebenen Random-Device oder mit einfacheren Zufallszahlgeneratoren wie dem LCG gemacht. Je besser (d.h. zufälliger) die Initialisierung, desto früher sind die generierten Zahlen auch zufällig. Ist dies nicht gewährleistet, kann $Y[2]$ mit einem zufälligen Seed, z.B. der Uhrzeit, initialisiert werden und $800'000$ Zahlen generiert werden, bevor der Algorithmus benutzt wird. So ist eine gute Gleichverteilung sichergestellt. \\
 
-Der Algorithmus für alle darauf folgenden Zufallszahlen $Y_i$ für $i>N$ werden wie folgt berechnet:
+Der Algorithmus für alle darauf folgenden Zufallszahlen $Y_i$ für
+$i>N$ werden wie folgt berechnet\footnote{$\oplus$: XOR-Funktion, $\wedge$: And-Funktion}:
 
 \begin{align}
 	h &:=  Y_{i-N} - Y_{i-N} \mod{2^{31}} + Y_{i-N+1} \mod{2^{31}} \\
@@ -486,6 +508,7 @@ static uniform_01<mt19937> dist(gen);
 Darauf kann die Funktion \texttt{dist()} verwendet werden um Zufallszahlen zu generieren. Der komplette Code ist im Github-Repository \cite{rng:githubRepo} abgelegt.
 
 Detaillierte Informationen zu den Möglichkeiten mit der Boost Random-Funktion ist auf der entsprechenden Referenz-Seite zu finden \cite{rng:boostRandom}.
+
 
 
 \newpage
