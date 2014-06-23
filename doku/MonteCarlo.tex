@@ -109,7 +109,7 @@ mit $N$ im Intervall $[a,b]$ gleichverteilten Zufallszahlen $x_i$ durch
 	\hat{I} = (b-a) \cdot \frac{1}{N} \sum_{i=1}^{N} f(x_i)
 \end{equation}
 
-approximiert werden kann. Der relative Fehler sinkt dabei mit $\frac{1}{\sqrt{N}}$. Während für analytisch lösbare Integrale und solche mit kleinen Dimensionen ($\leq 4$) andere Möglichkeiten oft schneller sind, ist die Monte Carlo Methode besonders bei hohen Dimensionen oder sehr komplizierten Integrationsgrenzen verbreitet. \\
+approximiert werden kann. Der relative Fehler sinkt dabei mit $1 / \sqrt{N}$. Während für analytisch lösbare Integrale und solche mit kleinen Dimensionen ($\leq 4$) andere Möglichkeiten oft schneller sind, ist die Monte Carlo Methode besonders bei hohen Dimensionen oder sehr komplizierten Integrationsgrenzen verbreitet. \\
 
 Der Algorithmus lässt sich sehr einfach beschreiben:
 
@@ -160,7 +160,7 @@ Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Qu
 
 
 \subsubsection{Weitere Anwendungen}
-Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Dort stellt sich das Problem, dass verschiedene Prozesse zwischen einzelnen Teilchen auftreten können. Diese Prozesse oder Ereignisse werden als Inputs $I_i$ bezeichnet. Ein Detektor misst nun gewisse Outputs $O_j$. Dabei interagieren die Inputs $I_i$ jedoch auch mit dem Detektor. Da in der Quantenmechanik nicht alles deterministisch abläuft, müssen probabilistische Aussagen gemacht werden, d.h. $P(O_j | I_i)$ geschätzt werden. Auch wenn verschiedene Zwischenschritte das Resultat $O_j$ beeinflussen, kann aufgrund der Wahrscheinlichkeit $P(O_j | I_i)$ und der Wahrscheinlichkeit des Outputs $P(O_j)$ eine Aussage über den Input $I_i$ gemacht werden. Solche Methoden werden u.a. verwendet um das Higgs Boson nachzuweisen. 
+Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Dort stellt sich das Problem, dass verschiedene Prozesse zwischen einzelnen Teilchen auftreten können. Diese Prozesse oder Ereignisse werden als Inputs $I_i$ bezeichnet. Ein Detektor misst nun gewisse Outputs $O_j$. Dabei interagieren die Inputs $I_i$ jedoch auch mit dem Detektor. Da in der Quantenmechanik nicht alles deterministisch abläuft, müssen probabilistische Aussagen gemacht werden, d.h. $P(O_j | I_i)$ geschätzt werden. Auch wenn verschiedene Zwischenschritte das Resultat $O_j$ beeinflussen, kann aufgrund der Wahrscheinlichkeit $P(O_j | I_i)$ und der Wahrscheinlichkeit des Outputs $P(O_j)$ eine Aussage über den Input $I_i$ gemacht werden. Solche Methoden werden u.a. verwendet um das Higgs Boson nachzuweisen. \\
 
 In der Versicherungsbranche ist die Monte Carlo Methode ebenso verbreitet. Dabei stellt sich ein ähnliches Problem: Ein Schadensszenario ($I_i$), z.B. ein Hochwasser, führt nicht nur zu direkten Schäden, sondern über komplizierte Zusammenhänge zu Folgeschäden. Ein direkter Zusammenhang zwischen einem Input $I_i$ und einem finanziellen Schaden $O_j$ ist schwierig zu berechnen. Mit einer Monte Carlo Simulation kann die Wahrscheinlichkeit eines Schadens $P(O_j | I_i)$ simuliert werden und daraus eine Versicherungsprämie berechnet werden.
 
@@ -190,7 +190,7 @@ Eine Effizienz von $\epsilon=1$ würde bedeuten, dass das Definitionsgebiet der 
 
 Für hohe $N$ wird der Fehler mit einem Faktoren $1 / \sqrt{N}$ gegen $0$ konvergieren. Dies ist in Abbildung \ref{fig:Fehler} klar ersichtlich.
 
-\begin{figure}[h]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=8cm]{images/Fehler.eps}
     \caption{Betrag der Abweichung}
@@ -202,7 +202,7 @@ Für hohe $N$ wird der Fehler mit einem Faktoren $1 / \sqrt{N}$ gegen $0$ konver
 
 Um die Genauigkeit der Fehlerabweichung besser abschätzen zu können, wird die Simulation 1000 mal durchgeführt und die gemittelte effektive Abweichung mit der Schätzung verglichen.\\
 
-\begin{figure}[h]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=8cm]{images/Fehler_gemittelt.eps}
     \caption{Betrag der Abweichung, gemittelt}
@@ -211,15 +211,14 @@ Um die Genauigkeit der Fehlerabweichung besser abschätzen zu können, wird die 
 
 Dabei zeigt sich, dass die Schätzung ca. um den Faktor 2 höher liegt als die Abweichungen der Simulationsergebnisse. Zumindest die Grössenordnung des Schätzers stimmt somit. Um zu illustrieren, wie der Faktor zustande kommen könnte, wird ein Histogramm der Fehlerabweichung gemacht. Dazu werden eine Million Simulationen mit N=1000 durchgeführt und in die Beträge der Abweichung in ein Histogramm eingetragen. In Abbildung \ref{fig:Histogramm} ist ersichtlich, dass die Streuung ziemlich hoch ist. Es tauchen Werte auf, welche das zehnfache des Schätzers betragen. Somit ist der Schätzer sowieso nur als Grössenordnung zu verstehen, da ein einzelnes Simulationsergebnis wesentlich ungenauer sein kann.
 
-Der Mittelwert der Abweichungen liegt bei 0.0414, der Schätzer prognostiziert 0.0661. Dies entspricht einem Faktor von rund 0.63. Die Formel \ref{eq:relativer_Fehler}, welche den relativen Fehler schätzt, könnte in diesem Beispiel mit der Konstante 0.6 ergänzt werden, womit die Schätzung sehr genau stimmen würde. Ob dieser Faktor nur in diesem Beispiel oder generell gilt, wird nicht weiter untersucht.
+%Der Mittelwert der Abweichungen liegt bei 0.0414, der Schätzer prognostiziert 0.0661. Dies entspricht einem Faktor von rund 0.63. Die Formel \ref{eq:relativer_Fehler}, welche den relativen Fehler schätzt, könnte in diesem Beispiel mit der Konstante 0.6 ergänzt werden, womit die Schätzung sehr genau stimmen würde. Ob dieser Faktor nur in diesem Beispiel oder generell gilt, wird nicht weiter untersucht.
 
-\begin{figure}[h]
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=8cm]{images/Histogramm.eps}
     \caption{Beträge des Effektiven Fehlers bei N = 1000, Fehlerschätzung = 0.0414}
     \label{fig:Histogramm}
 \end{figure}
-
 
 
 \subsection{Implementation in OpenCL}
@@ -230,7 +229,7 @@ Die einfachste Lösung für das Problem ist es, auf der CPU qualitativ hochwerti
 
 Wird diese Variante mit C bzw. OpenCL umgesetzt, stellen sich die erwarteten Resultate ein: Die Rechenzeit steigt linear mit der Anzahl Punkte, die Berechnung ist jedoch deutlich schneller als bei serieller Berechnung auf der CPU. Mit 48.909 Mio Berechnungen pro Sekunde ist die parallelisierte Version um Faktor 5 schneller  als die serielle Implementation.
 
-\begin{figure}[htbp]
+\begin{figure}[ht!]
 	\centering
 	\includegraphics[width=8cm]{images/Berechnungszeit_OpenCL.eps}
 	\caption{Berechnungszeit mit OpenCL}
@@ -241,7 +240,7 @@ Wird diese Variante mit C bzw. OpenCL umgesetzt, stellen sich die erwarteten Res
 \subsubsection{Ansatz II: Zufallszahlen auf GPU}
 Da Zufallszahlen mathematisch berechnet werden, liegt es nahe, diese auf der GPU zu berechnen. Als Startwert (seed), kann z.B. die Worker-ID verwendet werden. So verfügen alle Worker über unabhängige Zufallszahlen. Die meisten Algorithmen sind jedoch nur dazu geeignet, von einem Startwert aus eine lange Folge unabhängiger Zufallszahlen zu berechnen. Wird der Algorithmus nach nur 2 Werten mit einem anderen Startwert neu gestartet, ergibt sich kein besonders zufälliges Muster. Abbildung \ref{fig:OpenCL_ID_Seed} zeigt den Ausgang eines Zufallszahlengenerators in Abhängigkeit des Startwertes. Werden diese Werte für die Monte Carlo Simulation verwendet, wird das Ergebnis nicht gegen den korrekten Wert konvergieren. 
 
-\begin{figure}[htbp]
+\begin{figure}[ht!]
 	\centering
 	\includegraphics[width=8cm]{images/idAsSeed.eps}
 	\caption{Zufallszahlen auf GPU mit Worker-ID als Seed}
@@ -384,7 +383,6 @@ Aus Bedingung 3. folgt, dass die von Hutchinson \cite{rng:Hutchinson1966} vorges
 
 In den 90er Jahren wurde der Park-Miller Generator von einigen Seiten kritisiert, sodass diese offiziell als neue Faktoren $a = 48271$ oder $a = 69621$ empfahlen und ausdrücklich darauf hinwiesen dass der Algorithmus nur als Minimal Standard zu verstehen ist. So hat sich dieser auch weiterhin als Standard in vielen Bibliotheken etabliert und ist eindeutig als schneller, einfacher, aber trotzdem qualitativ hochwertiger RNG zu empfehlen.
 
-\newpage
 \subsubsection{Implementation des Minimal Standard}
 Eine logisch erscheinende Implementation in C sieht wie folgt aus:
 \begin{lstlisting}[style=C]
@@ -434,7 +432,6 @@ Damit ergeben sich Zwischenresultate bis $2^{32}$, womit eine einfache Implement
 \end{lstlisting}
 Diese Implementation ist nicht nur sehr schnell, sondern verfügt, wie von Park und Miller \cite{rng:ParkMiller1988} nachgewiesen, über sehr gute Eigenschaften um als Minimal Standard verwendet zu werden.
 
-\newpage
 \subsection{Mersenne-Twister} \label{subsec:MersenneTwister}
 Der Mersenne-Twister Algorithmus zeichnet sich durch eine extrem hohe Periode von $2^{19937}-1 \approx 4.3 \cdot 10^{6001}$ aus. Die Periodenlänge ist eine Mersenne-Primzahl\footnote{Mersenne-Primzahl: Primzahl der Form $2^{n}-1$} und gibt dem Algorithmus den Namen. Die Ausgabesequenz ist bis zur Dimension 623 gleichverteilt, d.h. werden die ausgegebenen Zahlen als Vektoren bis Dimension 623 interpretiert, so sind diese Vektoren immer gleichverteilt. \\
 
