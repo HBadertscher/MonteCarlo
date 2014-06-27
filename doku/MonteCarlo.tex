@@ -78,7 +78,7 @@
 \begin{refsection}
 
 \section{Einleitung}
-Der Monte Carlo Algorithmus ist ein Verfahren zur Lösung numerischer Probleme durch das Ziehen von Zufallszahlen. Die Idee, mathematische bzw. physikalische Probleme mit einem stochastischen Sampling-Verfahren zu approximieren stammt vom polnisch-amerikanischen Mathematiker Stanisław Marcin Ulam (1909 -- 1984), welcher zu dieser Zeit im Los Alamos National Labaratory arbeitete. Seine Idee, und wie es dazu kam, beschrieb er folgendermassen: \\
+Der Monte Carlo Algorithmus ist ein Verfahren zur Lösung numerischer Probleme durch das Ziehen von Zufallszahlen. Die Idee, mathematische bzw. physikalische Probleme mit einem stochastischen Sampling-Verfahren zu approximieren, stammt vom polnisch-amerikanischen Mathematiker Stanisław Marcin Ulam (1909 -- 1984), welcher zu dieser Zeit im Los Alamos National Labaratory arbeitete. Seine Idee und wie es dazu kam, beschrieb er folgendermassen: \\
 
 \begin{quote}
 \textit{“The first thoughts and attempts I made to practice [the Monte Carlo method] were suggested by a question which occurred to me in 1946 as I was convalescing from an illness and playing solitaires. The question was what are the chances that a Canfield solitaire laid out with 52 cards will come out successfully? After spending a lot of time trying to estimate them by pure combinatorial calculations, I wondered whether a more practical method than “abstract thinking” might not be to lay it out say one hundred times and simply observe and count the number of successful plays. This was already possible to envisage with the beginning of the new era of fast computers, and I immediately thought of problems of neutron diffusion and other questions of mathematical physics, and more generally how to change processes described by certain differential equations into an equivalent form interpretable as a succession of random operations. Later... [in 1946, I ] described the idea to John von Neumann and we began to plan actual calculations.”} - Stan Ulam, 1983
@@ -152,7 +152,7 @@ entspricht der Wahrscheinlichkeit, dass ein Paar von Zufallszahlen $(x_i,y_i)$ m
 	\label{fig:KreisHitMiss}
 \end{figure}
 
-Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Quadranten reduziert werden. Für $N$ Iterationen, von welchen $k$ die Bedingung \ref{equ:innerhalbKreis} ergibt sich somit folgende Abschätzung für $\pi$:
+Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Quadranten reduziert werden. Für $N$ Iterationen, von welchen $k$ die Bedingung \ref{equ:innerhalbKreis} erfüllen, ergibt sich somit folgende Abschätzung für $\pi$:
 
 \begin{equation}
 	\hat{\pi} = 4 \cdot \frac{k}{N}
@@ -160,9 +160,9 @@ Dank der Symmetrie des Kreises kann das Problem offensichtlich auf den ersten Qu
 
 
 \subsubsection{Weitere Anwendungen}
-Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Dort stellt sich das Problem, dass verschiedene Prozesse zwischen einzelnen Teilchen auftreten können. Diese Prozesse oder Ereignisse werden als Inputs $I_i$ bezeichnet. Ein Detektor misst nun gewisse Outputs $O_j$. Dabei interagieren die Inputs $I_i$ jedoch auch mit dem Detektor. Da in der Quantenmechanik nicht alles deterministisch abläuft, müssen probabilistische Aussagen gemacht werden, d.h. $P(O_j | I_i)$ geschätzt werden. Auch wenn verschiedene Zwischenschritte das Resultat $O_j$ beeinflussen, kann aufgrund der Wahrscheinlichkeit $P(O_j | I_i)$ und der Wahrscheinlichkeit des Outputs $P(O_j)$ eine Aussage über den Input $I_i$ gemacht werden. Solche Methoden werden u.a. verwendet um das Higgs Boson nachzuweisen. \\
+Besonders in der Teilchenphysik - aus welcher die Monte Carlo Methode bekannterweise stammt - wird die Monte Carlo Methode sehr häufig angewandt. Dort stellt sich das Problem, dass verschiedene Prozesse zwischen einzelnen Teilchen auftreten können. Diese Prozesse oder Ereignisse werden als Inputs $I_i$ bezeichnet. Ein Detektor misst nun gewisse Outputs $O_j$. Dabei interagieren die Inputs $I_i$ jedoch auch mit dem Detektor. Da in der Quantenmechanik nicht alles deterministisch abläuft, müssen probabilistische Aussagen gemacht werden, d.h. $P(O_j | I_i)$ geschätzt werden. Auch wenn verschiedene Zwischenschritte das Resultat $O_j$ beeinflussen, kann aufgrund der Wahrscheinlichkeit $P(O_j | I_i)$ und der Wahrscheinlichkeit des Outputs $P(O_j)$ eine Aussage über den Input $I_i$ gemacht werden. Solche Methoden werden u.a. verwendet, um das Higgs Boson nachzuweisen. \\
 
-In der Versicherungsbranche ist die Monte Carlo Methode ebenso verbreitet. Dabei stellt sich ein ähnliches Problem: Ein Schadensszenario ($I_i$), z.B. ein Hochwasser, führt nicht nur zu direkten Schäden, sondern über komplizierte Zusammenhänge zu Folgeschäden. Ein direkter Zusammenhang zwischen einem Input $I_i$ und einem finanziellen Schaden $O_j$ ist schwierig zu berechnen. Mit einer Monte Carlo Simulation kann die Wahrscheinlichkeit eines Schadens $P(O_j | I_i)$ simuliert werden und daraus eine Versicherungsprämie berechnet werden.
+In der Versicherungsbranche ist die Monte Carlo Methode ebenso verbreitet. Dabei stellt sich ein ähnliches Problem: Ein Schadensszenario ($I_i$), z.B. ein Hochwasser, führt zu direkten Schäden und über komplizierte Zusammenhänge zu Folgeschäden. Ein direkter Zusammenhang zwischen einem Input $I_i$ und einem finanziellen Schaden $O_j$ ist schwierig zu berechnen. Mit einer Monte Carlo Simulation kann die Wahrscheinlichkeit eines Schadens $P(O_j | I_i)$ simuliert werden und daraus eine Versicherungsprämie berechnet werden.
 
 
 
@@ -172,16 +172,16 @@ In der Versicherungsbranche ist die Monte Carlo Methode ebenso verbreitet. Dabei
 \section{Implementation}
 \subsection{Implementation in C}
 Die Implementation dieses Beispiels in C ist relativ kurz und
-übersichtlich: Über $N$ Iterationen wird jeweils ein Paar
+übersichtlich: Über $N$ Iterationen wird jeweils ein Paar von
 Zufallszahlen $(x,y)$ generiert und die Gleichung
-\ref{equ:innerhalbKreis}: $x^2 + y^2$ berechnet. Ist das Resultat $\leq1$ wird eine Summe erhöht. Das Resultat ist schlussendlich die Summe geteilt durch die Anzahl Iterationen $N$ mal 4. Da diese Lösung nicht parallel abläuft, steigt der Rechenaufwand linear mit der Anzahl Iterationen. \\
+\ref{equ:innerhalbKreis}: $x^2 + y^2$ berechnet. Ist das Resultat $\leq1$, wird eine Summe erhöht. Das Resultat ist schlussendlich die Summe geteilt durch die Anzahl Iterationen $N$ mal 4. Da diese Lösung nicht parallel abläuft, steigt der Rechenaufwand linear mit der Anzahl Iterationen. \\
 
 Die Effizienz $\epsilon$ des Hit-or-Miss Algorithmus lässt sich mit der Anzahl Hits $k$ und der Iterationen $N$ gemäss Gleichung \ref{equ:effizienz_hitnmiss} beschreiben.
 \begin{equation}
 	\epsilon = \frac{k}{N}
 	\label{equ:effizienz_hitnmiss}
 \end{equation} 
-Eine Effizienz von $\epsilon=1$ würde bedeuten, dass das Definitionsgebiet der Zufallszahlen $\Omega$ genau der Zielfunktion entspricht. Wird $\Omega$ sehr gross gewählt, ist die Wahrscheinlichkeit eines Hits sehr gering und es sind viele Iterationen notwendig um das korrekte Resultat zu erreichen. Der relative Fehler der Schätzung wird gemäss Gleichung \ref{equ:relativer_Fehler} berechnet.
+Eine Effizienz von $\epsilon=1$ würde bedeuten, dass das Definitionsgebiet der Zufallszahlen $\Omega$ genau der Zielfunktion entspricht. Wird $\Omega$ sehr gross gewählt, ist die Wahrscheinlichkeit eines Hits sehr gering und es sind viele Iterationen notwendig, um das korrekte Resultat zu erreichen. Der relative Fehler der Schätzung wird gemäss Gleichung \ref{equ:relativer_Fehler} berechnet.
 
 \begin{equation}
 	\text{Relativer Fehler} = \sqrt{\frac{1-\epsilon}{k}} 
@@ -196,11 +196,11 @@ Für hohe $N$ wird der Fehler mit einem Faktoren $1 / \sqrt{N}$ gegen $0$ konver
     \caption{Betrag der Abweichung}
     \label{fig:Fehler}
 \end{figure}
-
+\newpage
 
 \subsection{Genauigkeit des Schätzers}
 
-Um die Genauigkeit der Fehlerabweichung besser abschätzen zu können, wird die Simulation 1000 mal durchgeführt und die gemittelte effektive Abweichung mit der Schätzung verglichen.\\
+Um die Genauigkeit der Fehlerabweichung besser abschätzen zu können, wird die Simulation 1000 mal durchgeführt und die gemittelte effektive Abweichung mit der Schätzung verglichen.\\[-0.5cm]
 
 \begin{figure}[ht!]
     \centering
@@ -249,6 +249,7 @@ Da Zufallszahlen mathematisch berechnet werden, liegt es nahe, diese auf der GPU
 
 \subsubsection{Ansatz III: Mischform}
 Die beste Lösung liegt in einer Mischform der beiden Ansätze: Auf der CPU wird eine geringe Anzahl qualitativ hochwertiger Zufallszahlen generiert. Mit diesen können Zufallszahlen-Generatoren auf der GPU initialisiert werden. Damit sich dieser Aufwand lohnt, wird pro Worker nicht nur ein Punkt berechnet, sondern eine Serie von Punkten. Das empfohlene Vorgehen lautet wie folgt:
+\newpage
 \begin{enumerate}
 	\item Abschätzen der Anzahl nötiger Iterationen $N$.
 	\item Bestimmen des Zielsystems und der Anzahl parallel ausführbarer Workers $M$.
@@ -258,9 +259,8 @@ Die beste Lösung liegt in einer Mischform der beiden Ansätze: Auf der CPU wird
 	\item Zusammenführen und Auswerten der Resultate der einzelnen Worker auf der CPU.
 \end{enumerate}
 
-Mit diesem Verfahren lässt sich die vorhandene Hardware gut ausnutzen, ohne Genauigkeit durch schlechte Zufallszahlen zu verlieren. 
+Mit diesem Verfahren lässt sich die vorhandene Hardware gut ausnutzen, ohne Genauigkeit durch schlechte Zufallszahlen zu verlieren.\\
 
-\clearpage
 \section{Zufallszahlengeneratoren} 
 
 \begin{quote}
@@ -318,7 +318,7 @@ LCG Generatoren sind sehr stark von der Wahl der Konstanten $a$,$b$,$m$ abhängi
 	\caption{Verteilung aufeinanderfolgender Zufallszahlen eines LCG mit $a=11$, $b=0$, $m=64$}
 	\label{fig:lcg_verteilung}
 \end{figure}
-
+$ $\\[-1cm]
 \subsubsection{Die IBM RANDU-Funktion}
 Ein bekanntes Beispiel für schlecht entwickelte LCG Generatoren ist die Funktion \textit{RANDU}, welche ab den 60er-Jahren eine Standardfunktion auf dem IBM System/360 war. Diese nutzte einen LCG-Algorithmus gemäss folgender Gleichung:
 
